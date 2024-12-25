@@ -4,16 +4,16 @@ import 'package:shop/components/dot_indicators.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/route/route_constants.dart';
 
-import 'components/onbording_content.dart';
+import '../../onboarding/views/components/onboarding_content.dart';
 
-class OnBordingScreen extends StatefulWidget {
-  const OnBordingScreen({super.key});
+class OnBoardingScreen extends StatefulWidget {
+  const OnBoardingScreen({super.key});
 
   @override
-  State<OnBordingScreen> createState() => _OnBordingScreenState();
+  State<OnBoardingScreen> createState() => _OnBoardingScreenState();
 }
 
-class _OnBordingScreenState extends State<OnBordingScreen> {
+class _OnBoardingScreenState extends State<OnBoardingScreen> {
   late PageController _pageController;
   int _pageIndex = 0;
   final List<Onbord> _onbordData = [
@@ -80,7 +80,7 @@ class _OnBordingScreenState extends State<OnBordingScreen> {
                     Navigator.pushNamed(context, logInScreenRoute);
                   },
                   child: Text(
-                    "Skip 22",
+                    "Skip",
                     style: TextStyle(
                         color: Theme.of(context).textTheme.bodyLarge!.color),
                   ),
@@ -95,7 +95,7 @@ class _OnBordingScreenState extends State<OnBordingScreen> {
                       _pageIndex = value;
                     });
                   },
-                  itemBuilder: (context, index) => OnbordingContent(
+                  itemBuilder: (context, index) => OnboardingContent(
                     title: _onbordData[index].title,
                     description: _onbordData[index].description,
                     image: (Theme.of(context).brightness == Brightness.dark &&

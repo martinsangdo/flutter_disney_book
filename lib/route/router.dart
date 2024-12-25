@@ -5,9 +5,9 @@ import 'screen_export.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case onbordingScreenRoute:
+    case onboardingScreenRoute:
       return MaterialPageRoute(
-        builder: (context) => const OnBordingScreen(),
+        builder: (context) => const OnBoardingScreen(),
       );
     // case preferredLanuageScreenRoute:
     //   return MaterialPageRoute(
@@ -243,7 +243,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     default:
       return MaterialPageRoute(
         // Make a screen for undefine
-        builder: (context) => const OnBordingScreen(),
+        builder: (context) => const OnBoardingScreen(),
       );
   }
 }
