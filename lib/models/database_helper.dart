@@ -24,6 +24,16 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE book (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        isbn TINYTEXT,
+        amazon TINYTEXT,
+        author TINYTEXT,
+        format TINYTEXT,
+        others TEXT,
+        page_num INTEGER,
+        age_range TINYTEXT,
+        description TEXT,
+        illustration TINYTEXT,
+        release_time INTEGER,
         slug TINYTEXT,
         title TEXT,
         cat TINYTEXT,
@@ -37,11 +47,11 @@ class DatabaseHelper {
     return await db.insert('book', book.toMap());
   }
 
-  // Future<List<Map>> queryBySlug(String slug) async {
-  //   Database db = await instance.db;
-  //   List<Map> result = await db.rawQuery('SELECT slug FROM book WHERE slug=?', [slug]);
-  //   return result;
-  // }
+  Future<List<Map>> queryBySlug(String slug) async {
+    Database db = await instance.db;
+    List<Map> result = await db.rawQuery('SELECT * FROM book WHERE slug=?', [slug]);
+    return result;
+  }
 
   Future<List<Map<String, dynamic>>> queryAll() async {
     Database db = await instance.db;

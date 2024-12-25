@@ -43,7 +43,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     //   Book(slug: 'aa11', title: 'Title 1', cat: 'cat 1', image: 'Image 222'),
     // ];
 
-    // for (Book book in itemsToAdd) {
+    // for (Book book in list) {
     //   DatabaseHelper.instance.insert(book);
     // }
 
@@ -54,8 +54,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   Future<void> _fetchBooks() async {
-    final bookMap = await DatabaseHelper.instance.queryAll();
-    print(bookMap);
+    final bookMap = await DatabaseHelper.instance.queryBySlug('firebuds-meet-the-firebuds');
+    print(bookMap[0]['title']);
   }
 
   late Future<List<Book>> futureBooks;
