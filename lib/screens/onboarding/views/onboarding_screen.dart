@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:shop/components/dot_indicators.dart';
 import 'package:shop/constants.dart';
-import 'package:shop/route/route_constants.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop/models/book_model.dart';
+import 'package:shop/route/screen_export.dart';
 
 import '../../onboarding/views/components/onboarding_content.dart';
 
@@ -14,49 +18,51 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
+  //query data
+  Future<List<Book>> fetchBooks(http.Client client) async {
+    final response = await client
+      .get(Uri.parse('https://api.npoint.io/a458b7fbac62c39b2acd'));
+    if (response.statusCode != 200){
+      print('cannot query data');
+      return [];
+    } else {
+      // Use the compute function to run in a separate isolate.
+      return parseBooks(response.body);
+    }
+  }
+
+  // A function that converts a response body into a List<Photo>.
+  List<Book> parseBooks(String responseBody) {
+    final parsed =
+        (jsonDecode(responseBody) as List).cast<Map<String, dynamic>>();
+    List<Book> list = parsed.map<Book>((json) => Book.fromJson(json)).toList();
+    print('Finish loading data: ' + list.length.toString());
+    //move to home page
+    Navigator.pushNamed(context, homeScreenRoute);
+    return list;
+  }
+
+  late Future<List<Book>> futureBooks;
+
   late PageController _pageController;
+  int MAX_WAIT_LOADING = 10;   //max 5 seconds
+
   int _pageIndex = 0;
-  final List<Onbord> _onbordData = [
-    Onbord(
+  final List<Onboard> _onboardData = [
+    Onboard(
       image: "assets/Illustration/Illustration-0.png",
       imageDarkTheme: "assets/Illustration/Illustration_darkTheme_0.png",
-      title: "Find the item you’ve \nbeen looking for",
-      description:
-          "Here you’ll see rich varieties of goods, carefully classified for seamless browsing experience.",
-    ),
-    Onbord(
-      image: "assets/Illustration/Illustration-1.png",
-      imageDarkTheme: "assets/Illustration/Illustration_darkTheme_1.png",
-      title: "Get those shopping \nbags filled",
-      description:
-          "Add any item you want to your cart, or save it on your wishlist, so you don’t miss it in your future purchases.",
-    ),
-    Onbord(
-      image: "assets/Illustration/Illustration-2.png",
-      imageDarkTheme: "assets/Illustration/Illustration_darkTheme_2.png",
-      title: "Fast & secure \npayment",
-      description: "There are many payment options available for your ease.",
-    ),
-    Onbord(
-      image: "assets/Illustration/Illustration-3.png",
-      imageDarkTheme: "assets/Illustration/Illustration_darkTheme_3.png",
-      title: "Package tracking",
-      description:
-          "In particular, Shoplon can pack your orders, and help you seamlessly manage your shipments.",
-    ),
-    Onbord(
-      image: "assets/Illustration/Illustration-4.png",
-      imageDarkTheme: "assets/Illustration/Illustration_darkTheme_4.png",
-      title: "Nearby stores",
-      description:
-          "Easily track nearby shops, browse through their items and get information about their prodcuts.",
-    ),
+      title: "",  //getting from onboarding_content
+      description: ""
+    )
   ];
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: 0);
-    super.initState();
+      _pageController = PageController(initialPage: 0);
+      super.initState();
+      print('begin querying data 111');
+      futureBooks = fetchBooks(http.Client());
   }
 
   @override
@@ -73,76 +79,34 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, logInScreenRoute);
-                  },
-                  child: Text(
-                    "Skip",
-                    style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyLarge!.color),
-                  ),
-                ),
-              ),
+              // Align(
+              //   alignment: Alignment.centerRight,
+              //   child: TextButton(
+              //     onPressed: () {
+              //       Navigator.pushNamed(context, logInScreenRoute);
+              //     },
+              //     child: Text(
+              //       "Skip",
+              //       style: TextStyle(
+              //           color: Theme.of(context).textTheme.bodyLarge!.color),
+              //     ),
+              //   ),
+              // ),
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
-                  itemCount: _onbordData.length,
-                  onPageChanged: (value) {
-                    setState(() {
-                      _pageIndex = value;
-                    });
-                  },
+                  itemCount: _onboardData.length,
                   itemBuilder: (context, index) => OnboardingContent(
-                    title: _onbordData[index].title,
-                    description: _onbordData[index].description,
+                    title: _onboardData[index].title,
+                    description: _onboardData[index].description,
                     image: (Theme.of(context).brightness == Brightness.dark &&
-                            _onbordData[index].imageDarkTheme != null)
-                        ? _onbordData[index].imageDarkTheme!
-                        : _onbordData[index].image,
+                            _onboardData[index].imageDarkTheme != null)
+                        ? _onboardData[index].imageDarkTheme!
+                        : _onboardData[index].image,
                     isTextOnTop: index.isOdd,
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  ...List.generate(
-                    _onbordData.length,
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(right: defaultPadding / 4),
-                      child: DotIndicator(isActive: index == _pageIndex),
-                    ),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_pageIndex < _onbordData.length - 1) {
-                          _pageController.nextPage(
-                              curve: Curves.ease, duration: defaultDuration);
-                        } else {
-                          Navigator.pushNamed(context, logInScreenRoute);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                      ),
-                      child: SvgPicture.asset(
-                        "assets/icons/Arrow - Right.svg",
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: defaultPadding),
+              )
             ],
           ),
         ),
@@ -151,11 +115,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 }
 
-class Onbord {
+class Onboard {
   final String image, title, description;
   final String? imageDarkTheme;
 
-  Onbord({
+  Onboard({
     required this.image,
     required this.title,
     this.description = "",
