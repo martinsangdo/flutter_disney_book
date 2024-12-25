@@ -37,6 +37,12 @@ class DatabaseHelper {
     return await db.insert('book', book.toMap());
   }
 
+  // Future<List<Map>> queryBySlug(String slug) async {
+  //   Database db = await instance.db;
+  //   List<Map> result = await db.rawQuery('SELECT slug FROM book WHERE slug=?', [slug]);
+  //   return result;
+  // }
+
   Future<List<Map<String, dynamic>>> queryAll() async {
     Database db = await instance.db;
     return await db.query('book');
@@ -45,6 +51,12 @@ class DatabaseHelper {
   Future<int> update(Book book) async {
     Database db = await instance.db;
     return await db.update('book', book.toMap(), where: 'slug = ?', whereArgs: [book.slug]);
+  }
+
+  Future<int> upsert(Book book) async {
+    Database db = await instance.db;
+
+    return await db.insert('book', book.toMap());
   }
 
   Future<int> delete(int id) async {

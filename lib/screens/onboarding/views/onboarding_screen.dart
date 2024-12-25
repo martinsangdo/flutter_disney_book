@@ -39,13 +39,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     List<Book> list = parsed.map<Book>((json) => Book.fromJson(json)).toList();
     print('Finish loading data: ' + list.length.toString());
     //
-    List<Book> itemsToAdd = [
-      Book(slug: 'aa11', title: 'Title 1', cat: 'cat 1', image: 'Image 222'),
-    ];
+    // List<Book> itemsToAdd = [
+    //   Book(slug: 'aa11', title: 'Title 1', cat: 'cat 1', image: 'Image 222'),
+    // ];
 
-    for (Book book in itemsToAdd) {
-      DatabaseHelper.instance.insert(book);
-    }
+    // for (Book book in itemsToAdd) {
+    //   DatabaseHelper.instance.insert(book);
+    // }
 
     _fetchBooks();
     //move to home page

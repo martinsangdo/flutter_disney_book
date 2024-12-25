@@ -1,4 +1,4 @@
-package com.example.shop
+package com.xufagroup.disneybook
 
 import io.flutter.embedding.android.FlutterActivity
 
