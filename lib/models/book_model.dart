@@ -1,4 +1,5 @@
 //author: Sang Do
+import 'dart:convert';
 import 'dart:ffi';
 
 class Book {
@@ -49,7 +50,7 @@ class Book {
       amazon: json['amazon'] as String,
       author: json['author'] as String,
       format: json['format'] as String,
-      others: json['others'].join("") as String,
+      others: jsonEncode(json['others']),
       page_num: page_num,
       age_range: json['age_range'] as String,
       description: json['description'] as String,

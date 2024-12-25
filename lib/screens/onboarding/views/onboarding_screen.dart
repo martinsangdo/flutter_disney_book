@@ -46,16 +46,22 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     // for (Book book in list) {
     //   DatabaseHelper.instance.insert(book);
     // }
+    // print(list[0].others);
 
     _fetchBooks();
-    //move to home page
-    Navigator.pushNamed(context, homeScreenRoute);
+    
     return list;
   }
 
   Future<void> _fetchBooks() async {
     final bookMap = await DatabaseHelper.instance.queryBySlug('firebuds-meet-the-firebuds');
-    print(bookMap[0]['title']);
+    // print(bookMap[0]['others']);
+    var others = jsonDecode(bookMap[0]['others']);
+    print(others[1]['slugs'][0]);
+    //move to home page
+    if (context.mounted) {
+      Navigator.pushNamed(context, homeScreenRoute);
+    }
   }
 
   late Future<List<Book>> futureBooks;
