@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/models/book_model.dart';
+import 'package:shop/models/database_helper.dart';
 import 'package:shop/route/screen_export.dart';
 
 import '../../onboarding/views/components/onboarding_content.dart';
@@ -32,14 +33,29 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   // A function that converts a response body into a List<Photo>.
-  List<Book> parseBooks(String responseBody) {
+  List<Book> parseBooks(String responseBody){
     final parsed =
         (jsonDecode(responseBody) as List).cast<Map<String, dynamic>>();
     List<Book> list = parsed.map<Book>((json) => Book.fromJson(json)).toList();
     print('Finish loading data: ' + list.length.toString());
+    //
+    List<Book> itemsToAdd = [
+      Book(slug: 'aa11', title: 'Title 1', cat: 'cat 1', image: 'Image 222'),
+    ];
+
+    for (Book book in itemsToAdd) {
+      DatabaseHelper.instance.insert(book);
+    }
+
+    _fetchBooks();
     //move to home page
     Navigator.pushNamed(context, homeScreenRoute);
     return list;
+  }
+
+  Future<void> _fetchBooks() async {
+    final bookMap = await DatabaseHelper.instance.queryAll();
+    print(bookMap);
   }
 
   late Future<List<Book>> futureBooks;

@@ -6,7 +6,7 @@ class Book {
     final String cat;   //optional
     final String image; //cover url
 
-  const Book({
+  Book({
     required this.slug,
     required this.title,
     required this.cat,
@@ -22,5 +22,16 @@ class Book {
     );
   }
 
-  
+  Map<String, dynamic> toMap() {
+    return {'slug': slug, 'title': title, 'cat': cat, 'image': image};
+  }
+
+  factory Book.fromMap(Map<String, dynamic> map) {
+    return Book(
+      slug: map['slug'],
+      title: map['title'],
+      cat: map['cat'],
+      image: map['image']
+    );
+  }
 }
