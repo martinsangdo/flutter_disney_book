@@ -40,13 +40,26 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     print('Finish loading data: ' + list.length.toString());
     //
     // List<Book> itemsToAdd = [
-    //   Book(slug: 'aa11', title: 'Title 1', cat: 'cat 1', image: 'Image 222'),
-    // ];
+    //   Book(
+    //     slug: 'aaa-bbb-ccc', 
+    //     title: 'Title 123456789', 
+    //     cat: 'cat 1', 
+    //     image: 'Image 222',
+    //     isbn: '1111',
+    //   amazon: '222',
+    //   author: '333',
+    //   format: '444',
+    //   others: "",
+    //   page_num: 34,
+    //   age_range: '555',
+    //   description: '666',
+    //   illustration: '777',
+    //   release_time: 122345
+    // )];
 
     // for (Book book in list) {
-    //   DatabaseHelper.instance.insert(book);
+    //   DatabaseHelper.instance.upsert(book);
     // }
-    // print(list[0].others);
 
     _fetchBooks();
     
@@ -54,10 +67,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   Future<void> _fetchBooks() async {
-    final bookMap = await DatabaseHelper.instance.queryBySlug('firebuds-meet-the-firebuds');
-    // print(bookMap[0]['others']);
-    var others = jsonDecode(bookMap[0]['others']);
-    print(others[1]['slugs'][0]);
+    final bookMap = await DatabaseHelper.instance.queryBySlug('aaa-bbb-ccc');
+    print(bookMap[0]); //Meet the Firebuds
     //move to home page
     if (context.mounted) {
       Navigator.pushNamed(context, homeScreenRoute);

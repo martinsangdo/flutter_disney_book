@@ -63,10 +63,17 @@ class DatabaseHelper {
     return await db.update('book', book.toMap(), where: 'slug = ?', whereArgs: [book.slug]);
   }
 
-  Future<int> upsert(Book book) async {
+  Future<int> upsert(Book newBook) async {
     Database db = await instance.db;
-
-    return await db.insert('book', book.toMap());
+    String newSlug = newBook.slug;
+    List<Map> result = await db.rawQuery('SELECT * FROM book WHERE slug=?', [newSlug]);
+    if (result.isEmpty){
+      //insert new data
+      return insert(newBook);
+    } else {
+      //update book
+      return update(newBook);
+    }
   }
 
   Future<int> delete(int id) async {
