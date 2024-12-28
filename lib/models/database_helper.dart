@@ -1,6 +1,6 @@
-import 'dart:io';
-
+//author: Sang Do
 import 'package:path/path.dart';
+import 'package:shop/models/metadata_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'book_model.dart';
 
@@ -46,6 +46,18 @@ class DatabaseHelper {
         image TEXT
       )
     ''');
+    await db.execute('''
+      CREATE TABLE metadata (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uuid TINYTEXT,
+        books TEXT,
+        categories TEXT,
+        best_sellers TEXT,
+        home_categories TEXT,
+        affiliate_post_fix TEXT,
+        update_time INTEGER
+      )
+    ''');
   }
 
   Future<int> insert(Book book) async {
@@ -57,6 +69,11 @@ class DatabaseHelper {
     Database db = await instance.db;
     List<Map> result = await db.rawQuery('SELECT * FROM book WHERE slug=?', [slug]);
     return result;
+  }
+
+  Future<List<Map>> rawQuery(String query, List<String> conditions) async {
+    Database db = await instance.db;
+    return await db.rawQuery(query, conditions);
   }
 
   Future<List<Map<String, dynamic>>> queryAll() async {
@@ -86,5 +103,9 @@ class DatabaseHelper {
     Database db = await instance.db;
     return await db.delete('book', where: 'id = ?', whereArgs: [id]);
   }
-
+  /////////////// METADATA
+  Future<int> insertMetadata(MetaDataModel newMetadata) async {
+    Database db = await instance.db;
+    return await db.insert('metadata', newMetadata.toMap());
+  }
 }

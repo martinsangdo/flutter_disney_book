@@ -1,6 +1,5 @@
 //author: Sang Do
 import 'dart:convert';
-import 'dart:ffi';
 
 class Book {
     final String slug;

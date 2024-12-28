@@ -7,6 +7,7 @@ import 'package:shop/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/models/book_model.dart';
 import 'package:shop/models/database_helper.dart';
+import 'package:shop/models/metadata_model.dart';
 import 'package:shop/route/screen_export.dart';
 
 import '../../onboarding/views/components/onboarding_content.dart';
@@ -19,19 +20,27 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
-  //load metadata of project
+  //1. load metadata of project
     void fetchMetadata(http.Client client) async {
-      final response = await client
-          .get(Uri.parse(DISNEY_METADATA_URL));
+      final response = await client.get(Uri.parse(DISNEY_METADATA_URL));
       if (response.statusCode != 200){
-        print('cannot query data');
+        print('Cannot query metadata');
+        //todo display something or check if we had metadata in sqlite
       } else {
-        //todo check if there is any new data of books
-        //query all books if any
-        // fetchBooks();
+        //Query db & compare with latest data from cloud
+        final metadataInDB = await DatabaseHelper.instance.rawQuery('SELECT * FROM metadata', []);
+        if (metadataInDB.isEmpty){
+          //insert new
+          final metadataObj = MetaDataModel.fromJson(jsonDecode(response.body));
+          DatabaseHelper.instance.insertMetadata(metadataObj).then((id){
+            print('Inserted metadata');
+          });
+        } else {
+          print("Metadata existed: " + metadataInDB[0]['uuid']);
+        }
       }
     }
-  //query data
+  //query all books
   Future<List<Book>> fetchBooks(http.Client client) async {
     final response = await client
       .get(Uri.parse('https://api.npoint.io/a458b7fbac62c39b2acd'));
@@ -78,13 +87,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   Future<void> _fetchSampleBooks() async {
     final bookMap = await DatabaseHelper.instance.queryBySlug('aaa-bbb-ccc');
-    print(bookMap[0]['title']); //Meet the Firebuds
+    //print(bookMap[0]['title']); //Meet the Firebuds
     //move to home page
     if (context.mounted) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
     }
   }
-
   late Future<List<Book>> futureBooks;
 
   late PageController _pageController;
@@ -104,7 +112,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   void initState() {
       _pageController = PageController(initialPage: 0);
       super.initState();
-      // fetchMetadata(http.Client());
+      fetchMetadata(http.Client());
       // print('begin querying data 111');
       // futureBooks = fetchBooks(http.Client());
       _fetchSampleBooks();
@@ -124,19 +132,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
           child: Column(
             children: [
-              // Align(
-              //   alignment: Alignment.centerRight,
-              //   child: TextButton(
-              //     onPressed: () {
-              //       Navigator.pushNamed(context, logInScreenRoute);
-              //     },
-              //     child: Text(
-              //       "Skip",
-              //       style: TextStyle(
-              //           color: Theme.of(context).textTheme.bodyLarge!.color),
-              //     ),
-              //   ),
-              // ),
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,

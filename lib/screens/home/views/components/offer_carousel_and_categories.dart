@@ -22,7 +22,7 @@ class _PageState extends State<OffersCarouselAndCategories> {
 
   Future<void> _fetchSampleBooks() async {
     final bookMap = await DatabaseHelper.instance.queryBySlug('say-please-stitch');
-    print(bookMap[0]['title']);
+    //print(bookMap[0]['title']);
   }
 
   @override
