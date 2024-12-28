@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop/models/database_helper.dart';
 import 'package:shop/route/screen_export.dart';
 
 import '../../../../constants.dart';
@@ -29,11 +30,26 @@ List<CategoryModel> demoCategories = [
 ];
 // End For Preview
 
-class Categories extends StatelessWidget {
+class Categories extends StatefulWidget {
   const Categories({
     super.key,
   });
+ @override
+  State<Categories> createState() => _CategoriesState();
+}
 
+class _CategoriesState extends State<Categories> {
+  @override
+  void initState() {
+      super.initState();
+      _fetchMetadata();
+  }
+
+  Future<void> _fetchMetadata() async {
+    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT * FROM metadata', []);
+    debugPrint(_metadata[0]['categories']);
+  }
+  
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
