@@ -19,6 +19,18 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
+  //load metadata of project
+    void fetchMetadata(http.Client client) async {
+      final response = await client
+          .get(Uri.parse(DISNEY_METADATA_URL));
+      if (response.statusCode != 200){
+        print('cannot query data');
+      } else {
+        //todo check if there is any new data of books
+        //query all books if any
+        // fetchBooks();
+      }
+    }
   //query data
   Future<List<Book>> fetchBooks(http.Client client) async {
     final response = await client
@@ -61,17 +73,15 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     //   DatabaseHelper.instance.upsert(book);
     // }
 
-    _fetchBooks();
-    
     return list;
   }
 
-  Future<void> _fetchBooks() async {
+  Future<void> _fetchSampleBooks() async {
     final bookMap = await DatabaseHelper.instance.queryBySlug('aaa-bbb-ccc');
-    print(bookMap[0]); //Meet the Firebuds
+    print(bookMap[0]['title']); //Meet the Firebuds
     //move to home page
     if (context.mounted) {
-      Navigator.pushNamed(context, homeScreenRoute);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
     }
   }
 
@@ -94,8 +104,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   void initState() {
       _pageController = PageController(initialPage: 0);
       super.initState();
-      print('begin querying data 111');
-      futureBooks = fetchBooks(http.Client());
+      // fetchMetadata(http.Client());
+      // print('begin querying data 111');
+      // futureBooks = fetchBooks(http.Client());
+      _fetchSampleBooks();
   }
 
   @override

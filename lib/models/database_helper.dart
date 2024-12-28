@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'book_model.dart';
@@ -16,6 +18,10 @@ class DatabaseHelper {
   Future<Database> initDb() async {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'disney_book.db');
+
+    // final file = File(path);
+    // final size = file.lengthSync();
+    // print('db size: ' + size.toString());  //MB = X / 1024 * 1024
 
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
