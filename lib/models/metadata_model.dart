@@ -2,13 +2,13 @@
 import 'dart:convert';
 
 class MetaDataModel {
-    final String uuid;  //random unique ID because Metadata has only 1 record
-    final String books; //link to book data
-    final String categories;  //all categories hierachy
-    final int update_time; //the time we update this record in db (sec)
-    final String best_sellers;  //list of books
-    final String home_categories; //categories names that showing in home page
-    final String affiliate_post_fix;  //params that will be appended into each book link in Amazon
+    String uuid;  //random unique ID because Metadata has only 1 record
+    late String books; //link to book data
+    late String categories;  //all categories hierachy
+    late int update_time; //the time we update this record in db (sec)
+    late String best_sellers;  //list of books
+    late String home_categories; //categories names that showing in home page
+    late String affiliate_post_fix;  //params that will be appended into each book link in Amazon
 
   MetaDataModel({
     required this.uuid,
@@ -18,6 +18,10 @@ class MetaDataModel {
     required this.best_sellers,
     required this.home_categories,
     required this.affiliate_post_fix
+  });
+
+  MetaDataModel.empty({
+    required this.uuid
   });
 
   factory MetaDataModel.fromJson(Map<String, dynamic> json) {

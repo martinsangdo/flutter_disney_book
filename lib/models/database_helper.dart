@@ -89,7 +89,7 @@ class DatabaseHelper {
   Future<int> upsert(Book newBook) async {
     Database db = await instance.db;
     String newSlug = newBook.slug;
-    List<Map> result = await db.rawQuery('SELECT * FROM book WHERE slug=?', [newSlug]);
+    List<Map> result = await db.rawQuery('SELECT slug FROM book WHERE slug=?', [newSlug]);
     if (result.isEmpty){
       //insert new data
       return insert(newBook);
@@ -107,5 +107,9 @@ class DatabaseHelper {
   Future<int> insertMetadata(MetaDataModel newMetadata) async {
     Database db = await instance.db;
     return await db.insert('metadata', newMetadata.toMap());
+  }
+  Future<int> updateMetadata(MetaDataModel newMetadata) async {
+    Database db = await instance.db;
+    return await db.update('metadata', newMetadata.toMap(), where: 'uuid = ?', whereArgs: [newMetadata.uuid]);
   }
 }

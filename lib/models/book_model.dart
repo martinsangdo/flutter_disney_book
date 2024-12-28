@@ -2,21 +2,20 @@
 import 'dart:convert';
 
 class Book {
-    final String slug;
-    final String title;
-
-    final String cat;   //optional
-    final String image; //cover url
-    final String isbn;
-    final String amazon;
-    final String author;
-    final String format;
-    final String? others;  //list of other books
-    final int page_num;
-    final String age_range;
-    final String description;
-    final String illustration;
-    final int release_time;
+    String slug;
+    late String title;
+    late String cat;   //optional
+    late String image; //cover url
+    late String isbn;
+    late String amazon;
+    late String author;
+    late String format;
+    late String? others;  //list of other books
+    late int page_num;
+    late String age_range;
+    late String description;
+    late String illustration;
+    late int release_time;
 
   Book({
     required this.isbn,
@@ -34,6 +33,8 @@ class Book {
     required this.cat,
     required this.image
   });
+
+  Book.empty(this.slug);
 
   factory Book.fromJson(Map<String, dynamic> json) {
     // List<OtherBooks> others = List.empty();

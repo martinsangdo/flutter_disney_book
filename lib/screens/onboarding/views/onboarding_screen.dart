@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/constants.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +8,7 @@ import 'package:shop/models/book_model.dart';
 import 'package:shop/models/database_helper.dart';
 import 'package:shop/models/metadata_model.dart';
 import 'package:shop/route/screen_export.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../../onboarding/views/components/onboarding_content.dart';
 
@@ -24,65 +24,95 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     void fetchMetadata(http.Client client) async {
       final response = await client.get(Uri.parse(DISNEY_METADATA_URL));
       if (response.statusCode != 200){
-        print('Cannot query metadata');
-        //todo display something or check if we had metadata in sqlite
+        debugPrint('Cannot get metadata from cloud');
+        //display something or check if we had metadata in sqlite
+        refreshMetaDataWithCloudData(MetaDataModel.empty(uuid: ""));
       } else {
+        final metadataObjFromCloud = MetaDataModel.fromJson(jsonDecode(response.body));
         //Query db & compare with latest data from cloud
-        final metadataInDB = await DatabaseHelper.instance.rawQuery('SELECT * FROM metadata', []);
-        if (metadataInDB.isEmpty){
-          //insert new
-          final metadataObj = MetaDataModel.fromJson(jsonDecode(response.body));
-          DatabaseHelper.instance.insertMetadata(metadataObj).then((id){
-            print('Inserted metadata');
-          });
-        } else {
-          print("Metadata existed: " + metadataInDB[0]['uuid']);
-        }
+        refreshMetaDataWithCloudData(metadataObjFromCloud);
       }
     }
+    //
+  void refreshMetaDataWithCloudData(MetaDataModel metadataObjFromCloud) async{
+      final metadataInDB = await DatabaseHelper.instance.rawQuery('SELECT * FROM metadata', []);
+        if (metadataInDB.isEmpty){
+          //there is no metadata in db
+          if (metadataObjFromCloud.uuid != ""){
+            //insert new
+            DatabaseHelper.instance.insertMetadata(metadataObjFromCloud).then((id){
+              debugPrint('Inserted metadata into db');
+              //get and update new books
+              fetchBooks(metadataObjFromCloud.books);
+            });
+          } else {
+            //todo: no data from db neither cloud -> should tell them to close app & try again
+
+          }
+        } else if (metadataObjFromCloud.uuid != ""){
+          debugPrint('Metadata existed in db: ' + metadataInDB[0]['update_time'].toString());
+          //compare update_time
+          var updateTimeInDB =  metadataInDB[0]['update_time'];
+          var updateTimeInCloud =  metadataObjFromCloud.update_time;
+          if (updateTimeInDB != updateTimeInCloud){
+            //update metadata in db
+            DatabaseHelper.instance.updateMetadata(metadataObjFromCloud).then((id){
+              debugPrint('Updated new metadata into db');
+              //get and update new books
+              fetchBooks(metadataObjFromCloud.books);
+            });
+          } else {
+            //do nothing because there is no new info from cloud
+            move2HomePage();
+          }
+        } else {
+          //do nothing because metadata existed in db & has nothing from cloud
+          move2HomePage();
+        }
+  }
   //query all books
-  Future<List<Book>> fetchBooks(http.Client client) async {
-    final response = await client
-      .get(Uri.parse('https://api.npoint.io/a458b7fbac62c39b2acd'));
+  void fetchBooks(String bookUrl) async {
+    final response = await http.Client().get(Uri.parse(bookUrl));
     if (response.statusCode != 200){
-      print('cannot query data');
-      return [];
+      debugPrint('Cannot get books from cloud');
+      refreshBooksWithCloudData([]);
     } else {
-      // Use the compute function to run in a separate isolate.
-      return parseBooks(response.body);
+      final parsed =
+        (jsonDecode(response.body) as List).cast<Map<String, dynamic>>();
+      List<Book> list = parsed.map<Book>((json) => Book.fromJson(json)).toList();
+      refreshBooksWithCloudData(list);
+    }
+  }
+  //update book data
+  void refreshBooksWithCloudData(List<Book> bookList) async{
+    //check if there is any books in db or not
+    List<Map> result = await DatabaseHelper.instance.rawQuery('SELECT COUNT(*) FROM book', []);
+    if (result.isEmpty){
+      //no data in db
+      if (bookList.isEmpty){
+        //todo: no data from db neither cloud -> should tell them to close app & try again
+
+      } else {
+        updateBookDataAndOpenHome(bookList);
+      }
+    } else {
+      //there is book data in db -> updata all book data
+      updateBookDataAndOpenHome(bookList);
     }
   }
 
-  // A function that converts a response body into a List<Photo>.
-  List<Book> parseBooks(String responseBody){
-    final parsed =
-        (jsonDecode(responseBody) as List).cast<Map<String, dynamic>>();
-    List<Book> list = parsed.map<Book>((json) => Book.fromJson(json)).toList();
-    print('Finish loading data: ' + list.length.toString());
+  void updateBookDataAndOpenHome(List<Book> bookList){
+    for (Book book in bookList) {
+      DatabaseHelper.instance.upsert(book);
+    }
     //
-    // List<Book> itemsToAdd = [
-    //   Book(
-    //     slug: 'aaa-bbb-ccc', 
-    //     title: 'Title 123456789', 
-    //     cat: 'cat 1', 
-    //     image: 'Image 222',
-    //     isbn: '1111',
-    //   amazon: '222',
-    //   author: '333',
-    //   format: '444',
-    //   others: "",
-    //   page_num: 34,
-    //   age_range: '555',
-    //   description: '666',
-    //   illustration: '777',
-    //   release_time: 122345
-    // )];
+    move2HomePage();
+  }
 
-    // for (Book book in list) {
-    //   DatabaseHelper.instance.upsert(book);
-    // }
-
-    return list;
+  void move2HomePage(){
+    if (context.mounted) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+    }
   }
 
   Future<void> _fetchSampleBooks() async {
@@ -113,9 +143,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       _pageController = PageController(initialPage: 0);
       super.initState();
       fetchMetadata(http.Client());
-      // print('begin querying data 111');
-      // futureBooks = fetchBooks(http.Client());
-      _fetchSampleBooks();
+      // _fetchSampleBooks();
   }
 
   @override
