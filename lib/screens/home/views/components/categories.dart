@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop/models/database_helper.dart';
@@ -16,7 +18,7 @@ class CategoryModel {
     this.route,
   });
 }
-
+/*
 List<CategoryModel> demoCategories = [
   CategoryModel(name: "All Categories"),
   CategoryModel(
@@ -28,6 +30,7 @@ List<CategoryModel> demoCategories = [
   CategoryModel(
       name: "Kids", svgSrc: "assets/icons/Child.svg", route: kidsScreenRoute),
 ];
+*/
 // End For Preview
 
 class Categories extends StatefulWidget {
@@ -39,6 +42,8 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
+  List<CategoryModel> _homeCategories = [];
+
   @override
   void initState() {
       super.initState();
@@ -46,8 +51,21 @@ class _CategoriesState extends State<Categories> {
   }
 
   Future<void> _fetchMetadata() async {
-    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT * FROM metadata', []);
-    debugPrint(_metadata[0]['categories']);
+    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories FROM metadata', []);
+    if (_metadata.isNotEmpty){
+      // debugPrint(_metadata[0]['home_categories']);
+      var home_categories = jsonDecode(_metadata[0]['home_categories']);
+      List<CategoryModel> _homeCat = [];
+      _homeCat.add(CategoryModel(name: "All categories"));  //default
+      for (String home_category in home_categories){
+        _homeCat.add(CategoryModel(name: home_category));
+      }
+      setState(() {
+        _homeCategories = _homeCat;
+      });
+    } else {
+
+    }
   }
   
   @override
@@ -57,19 +75,19 @@ class _CategoriesState extends State<Categories> {
       child: Row(
         children: [
           ...List.generate(
-            demoCategories.length,
+            _homeCategories.length,
             (index) => Padding(
               padding: EdgeInsets.only(
                   left: index == 0 ? defaultPadding : defaultPadding / 2,
                   right:
-                      index == demoCategories.length - 1 ? defaultPadding : 0),
+                      index == _homeCategories.length - 1 ? defaultPadding : 0),
               child: CategoryBtn(
-                category: demoCategories[index].name,
-                svgSrc: demoCategories[index].svgSrc,
+                category: _homeCategories[index].name,
+                svgSrc: _homeCategories[index].svgSrc,
                 isActive: index == 0,
                 press: () {
-                  if (demoCategories[index].route != null) {
-                    Navigator.pushNamed(context, demoCategories[index].route!);
+                  if (_homeCategories[index].route != null) {
+                    Navigator.pushNamed(context, _homeCategories[index].route!);
                   }
                 },
               ),

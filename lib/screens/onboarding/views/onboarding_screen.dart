@@ -35,6 +35,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     }
     //
   void refreshMetaDataWithCloudData(MetaDataModel metadataObjFromCloud) async{
+    //check if table metadata existed
       final metadataInDB = await DatabaseHelper.instance.rawQuery('SELECT * FROM metadata', []);
         if (metadataInDB.isEmpty){
           //there is no metadata in db
