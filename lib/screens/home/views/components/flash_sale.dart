@@ -23,7 +23,7 @@ class FlashSale extends StatelessWidget {
         // const BannerMWithCounterSkelton(),
         BannerMWithCounter(
           duration: const Duration(hours: 8),
-          text: "Super Flash Sale " + books!.length.toString(),
+          text: "Super Flash Sale ",
           press: () {},
         ),
         const SizedBox(height: defaultPadding / 2),

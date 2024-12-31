@@ -86,7 +86,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //   );
     case homeScreenRoute:
       return MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
+        builder: (context) => HomeScreen(),
       );
     // case brandScreenRoute:
     //   return MaterialPageRoute(

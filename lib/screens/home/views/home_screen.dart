@@ -15,7 +15,9 @@ import 'components/offer_carousel_and_categories.dart';
 import 'components/popular_products.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  bool? isCompleteFetching = false;
+
+  HomeScreen({super.key, this.isCompleteFetching});
 
 @override
   State<HomeScreen> createState() =>
@@ -24,9 +26,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeState extends State<HomeScreen> {
   Map<String, List<Book>> _homeBookMap = {
-    'Pixar': []
+    // 'Pixar': []
   };
-  bool isCompleteFetching = false;  //wait to get books details before showing UI
+  late bool _isCompleteFetching = false;  //wait to get books details before showing UI
 
   //setup Bottom Bar
   int _selectedBottomIndex = 0;
@@ -69,8 +71,11 @@ class _HomeState extends State<HomeScreen> {
           homeBookMap[cat] = basicBooks;
         }
       }
+      debugPrint('4444');
+      widget.isCompleteFetching = true;
       setState(() {
         _homeBookMap: homeBookMap;
+        // isCompleteFetching: true;
       });
     } else {
 
@@ -89,6 +94,14 @@ class _HomeState extends State<HomeScreen> {
   //
   @override
   Widget build(BuildContext context) {
+    _isCompleteFetching = widget != null && widget.isCompleteFetching != null;
+    if (!_isCompleteFetching){
+      return const Scaffold(
+        body: Center(
+            child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(

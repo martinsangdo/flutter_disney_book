@@ -112,7 +112,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   void move2HomePage(){
     if (context.mounted) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     }
   }
 
@@ -121,7 +121,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     //print(bookMap[0]['title']); //Meet the Firebuds
     //move to home page
     if (context.mounted) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     }
   }
   late Future<List<Book>> futureBooks;
