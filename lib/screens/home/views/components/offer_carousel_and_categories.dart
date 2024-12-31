@@ -17,12 +17,6 @@ class _PageState extends State<OffersCarouselAndCategories> {
   @override
   void initState() {
       super.initState();
-      _fetchSampleBooks();
-  }
-
-  Future<void> _fetchSampleBooks() async {
-    final bookMap = await DatabaseHelper.instance.queryBySlug('say-please-stitch');
-    debugPrint(bookMap[0]['title']);
   }
 
   @override

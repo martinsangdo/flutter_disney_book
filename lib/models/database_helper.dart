@@ -1,4 +1,5 @@
 //author: Sang Do
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:shop/models/metadata_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -103,6 +104,14 @@ class DatabaseHelper {
     Database db = await instance.db;
     return await db.delete('book', where: 'id = ?', whereArgs: [id]);
   }
+
+  Future<List<Map>> queryBookIn(List<dynamic> slugs) async {
+    Database db = await instance.db;
+    return await db.query('book', columns: ['slug', 'title', 'cat', 'image', 'release_time'], 
+      where: 'slug IN (${slugs.map((e) => "?").join(', ')})', 
+      whereArgs: slugs);
+  }
+
   /////////////// METADATA
   Future<int> insertMetadata(MetaDataModel newMetadata) async {
     Database db = await instance.db;

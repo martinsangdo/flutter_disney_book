@@ -9,13 +9,13 @@ class ProductCard extends StatelessWidget {
     required this.image,
     required this.brandName,
     required this.title,
-    required this.price,
+    this.price,
     this.priceAfetDiscount,
     this.dicountpercent,
     required this.press,
   });
   final String image, brandName, title;
-  final double price;
+  final double? price;
   final double? priceAfetDiscount;
   final int? dicountpercent;
   final VoidCallback press;
@@ -84,40 +84,6 @@ class ProductCard extends StatelessWidget {
                         .titleSmall!
                         .copyWith(fontSize: 12),
                   ),
-                  const Spacer(),
-                  priceAfetDiscount != null
-                      ? Row(
-                          children: [
-                            Text(
-                              "\$$priceAfetDiscount",
-                              style: const TextStyle(
-                                color: Color(0xFF31B0D8),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(width: defaultPadding / 4),
-                            Text(
-                              "\$$price",
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .color,
-                                fontSize: 10,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Text(
-                          "\$$price",
-                          style: const TextStyle(
-                            color: Color(0xFF31B0D8),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                          ),
-                        ),
                 ],
               ),
             ),

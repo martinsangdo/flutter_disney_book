@@ -6,27 +6,27 @@ class Book {
     late String title;
     late String cat;   //optional
     late String image; //cover url
-    late String isbn;
-    late String amazon;
-    late String author;
-    late String format;
+    late String? isbn;
+    late String? amazon;
+    late String? author;
+    late String? format;
     late String? others;  //list of other books
-    late int page_num;
-    late String age_range;
-    late String description;
-    late String illustration;
+    late int? page_num;
+    late String? age_range;
+    late String? description;
+    late String? illustration;
     late int release_time;
 
   Book({
-    required this.isbn,
-    required this.amazon, 
-    required this.author, 
-    required this.format, 
-    required this.others, 
-    required this.page_num, 
-    required this.age_range, 
-    required this.description, 
-    required this.illustration, 
+    this.isbn,
+    this.amazon, 
+    this.author, 
+    this.format, 
+    this.others, 
+    this.page_num, 
+    this.age_range, 
+    this.description, 
+    this.illustration, 
     required this.release_time,
     required this.slug,
     required this.title,
