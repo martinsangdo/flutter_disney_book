@@ -15,7 +15,7 @@ class Book {
     late String? age_range;
     late String? description;
     late String? illustration;
-    late int release_time;
+    late int? release_time;
 
   Book({
     this.isbn,
@@ -27,7 +27,7 @@ class Book {
     this.age_range, 
     this.description, 
     this.illustration, 
-    required this.release_time,
+    this.release_time,
     required this.slug,
     required this.title,
     required this.cat,

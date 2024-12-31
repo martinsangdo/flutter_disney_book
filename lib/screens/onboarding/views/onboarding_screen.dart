@@ -55,8 +55,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           //compare update_time
           var updateTimeInDB =  metadataInDB[0]['update_time'];
           var updateTimeInCloud =  metadataObjFromCloud.update_time;
-          debugPrint(metadataObjFromCloud.categories);
-
           if (updateTimeInDB != updateTimeInCloud){
             //update metadata in db
             DatabaseHelper.instance.updateMetadata(metadataObjFromCloud).then((id){

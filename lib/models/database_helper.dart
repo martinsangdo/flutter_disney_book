@@ -112,6 +112,18 @@ class DatabaseHelper {
       whereArgs: slugs);
   }
 
+  Future<List<Map>> queryByCat(String cat) async {
+    Database db = await instance.db;
+    List<Map> result = await db.query('book',
+      columns: ['slug', 'title', 'cat', 'image'],
+      where: 'cat = ?',
+      whereArgs: [cat],
+      orderBy: "release_time DESC",
+      limit: 20
+    );
+    return result;
+  }
+
   /////////////// METADATA
   Future<int> insertMetadata(MetaDataModel newMetadata) async {
     Database db = await instance.db;

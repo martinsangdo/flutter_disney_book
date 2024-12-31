@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shop/components/Banner/S/banner_s_style_1.dart';
 import 'package:shop/components/Banner/S/banner_s_style_5.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/models/book_model.dart';
+import 'package:shop/models/database_helper.dart';
 import 'package:shop/route/screen_export.dart';
 
 import 'components/best_sellers.dart';
@@ -19,6 +23,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeScreen> {
+  Map<String, List<Book>> _homeBookMap = {
+    'Pixar': []
+  };
+  bool isCompleteFetching = false;  //wait to get books details before showing UI
+
   //setup Bottom Bar
   int _selectedBottomIndex = 0;
   static const TextStyle optionStyle =
@@ -43,10 +52,35 @@ class _HomeState extends State<HomeScreen> {
       _selectedBottomIndex = index;
     });
   }
+
+  Future<void> _getLatestBooks() async {
+    Map<String, List<Book>> homeBookMap = {};
+    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories FROM metadata', []);
+    if (_metadata.isNotEmpty){
+      var home_categories = jsonDecode(_metadata[0]['home_categories']);
+      for (String cat in home_categories){
+        var books = await DatabaseHelper.instance.queryByCat(cat);
+        if (books.isNotEmpty){
+          List<Book> basicBooks = [];
+          for (Map book in books){
+            basicBooks.add(Book(slug: book['slug'],
+              title: book['title'], cat: book['cat'], image: book['image']));
+          }
+          homeBookMap[cat] = basicBooks;
+        }
+      }
+      setState(() {
+        _homeBookMap: homeBookMap;
+      });
+    } else {
+
+    }
+  }
   //
   @override
   void initState() {
       super.initState();
+      _getLatestBooks();
   }
   @override
   void dispose() {
@@ -63,12 +97,12 @@ class _HomeState extends State<HomeScreen> {
             const SliverToBoxAdapter(child: OffersCarouselAndCategories()),
             //2. List of best sellers
             const SliverToBoxAdapter(child: PopularProducts()),
-            //3. 
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
-              sliver: SliverToBoxAdapter(child: FlashSale()),
+            //3. Disney
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
+              sliver: SliverToBoxAdapter(child: FlashSale(books: _homeBookMap['Pixar'])),
             ),
-            //4. New arrival
+            //4. Marvel
             SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -87,9 +121,9 @@ class _HomeState extends State<HomeScreen> {
                 ],
               ),
             ),
-            //5. Best sellers
+            //5. Pixar
             const SliverToBoxAdapter(child: BestSellers()),
-            //
+            //6. Star wars
             const SliverToBoxAdapter(child: MostPopular()),
             SliverToBoxAdapter(
               child: Column(
@@ -111,6 +145,7 @@ class _HomeState extends State<HomeScreen> {
                 ],
               ),
             ),
+            //National Geographic
             const SliverToBoxAdapter(child: BestSellers()),
           ],
         ),
