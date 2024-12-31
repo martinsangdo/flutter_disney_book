@@ -8,10 +8,10 @@ import '../../../../constants.dart';
 import '../../../../models/product_model.dart';
 
 class FlashSale extends StatelessWidget {
-  List<Book>? books = [];
+  List<Book> books = [];
 
   FlashSale({
-    super.key, this.books
+    super.key, required this.books
   });
 
   @override
@@ -19,18 +19,10 @@ class FlashSale extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // While loading show 👇
-        // const BannerMWithCounterSkelton(),
-        BannerMWithCounter(
-          duration: const Duration(hours: 8),
-          text: "Super Flash Sale ",
-          press: () {},
-        ),
-        const SizedBox(height: defaultPadding / 2),
         Padding(
           padding: const EdgeInsets.all(defaultPadding),
           child: Text(
-            "Flash sale",
+            "Disney",
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
@@ -41,22 +33,18 @@ class FlashSale extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             // Find demoFlashSaleProducts on models/ProductModel.dart
-            itemCount: demoFlashSaleProducts.length,
+            itemCount: books!.length,
             itemBuilder: (context, index) => Padding(
               padding: EdgeInsets.only(
                 left: defaultPadding,
-                right: index == demoFlashSaleProducts.length - 1
+                right: index == books!.length - 1
                     ? defaultPadding
                     : 0,
               ),
               child: ProductCard(
-                image: demoFlashSaleProducts[index].image,
-                brandName: demoFlashSaleProducts[index].brandName,
-                title: demoFlashSaleProducts[index].title,
-                price: demoFlashSaleProducts[index].price,
-                priceAfetDiscount:
-                    demoFlashSaleProducts[index].priceAfetDiscount,
-                dicountpercent: demoFlashSaleProducts[index].dicountpercent,
+                image: DISNEY_IMG_URI + books[index].image,
+                brandName: books[index].cat,
+                title: books[index].title,
                 press: () {
                   Navigator.pushNamed(context, productDetailsScreenRoute,
                       arguments: index.isEven);
