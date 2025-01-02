@@ -78,7 +78,7 @@ class _HomeState extends State<HomeScreen> {
           List<Book> basicBooks = [];
           for (Map book in books){
             basicBooks.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], image: book['image']));
+              title: book['title'], cat: book['cat'], image: book['image'], description: book['description']));
           }
           homeBookMap[cat] = basicBooks;
         }
@@ -119,11 +119,11 @@ class _HomeState extends State<HomeScreen> {
             //1. Special offers & categories (sliding)
             const SliverToBoxAdapter(child: OffersCarouselAndCategories()),
             //2. List of best sellers
-            SliverToBoxAdapter(child: HorizontalList(books: _bestSellers)),
+            SliverToBoxAdapter(child: HorizontalList(header: 'Best sellers', books: _bestSellers)),
             //3. Disney
             SliverPadding(
               padding: const EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
-              sliver: SliverToBoxAdapter(child: FlashSale(books: _homeBookMap['Disney']!)),
+              sliver: SliverToBoxAdapter(child: HorizontalList(header: 'Disney', books: _homeBookMap['Disney']!)),
             ),
             //4. Marvel
             SliverToBoxAdapter(
@@ -143,7 +143,7 @@ class _HomeState extends State<HomeScreen> {
               ),
             ),
             //5. Pixar
-            SliverToBoxAdapter(child: HorizontalList(books: _homeBookMap['Pixar']!)),
+            SliverToBoxAdapter(child: HorizontalList(header: 'Pixar', books: _homeBookMap['Pixar']!)),
             //6. Star wars
             const SliverToBoxAdapter(child: MostPopular()),
             SliverToBoxAdapter(

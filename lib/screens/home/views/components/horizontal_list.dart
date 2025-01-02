@@ -9,9 +9,10 @@ import '../../../../constants.dart';
 
 class HorizontalList extends StatefulWidget {
   List<Book> books = []; //list of books to show in UI
+  String header;  //header of the list
 
   HorizontalList({
-    super.key, required this.books
+    super.key, required this.books, required this.header
   });
    @override
   State<HorizontalList> createState() => _LocalState();
@@ -19,6 +20,7 @@ class HorizontalList extends StatefulWidget {
 
 class _LocalState extends State<HorizontalList> {
   List<Book> _showingList = [];
+  String _showingHeader = '';
 
   @override
   void initState() {
@@ -28,6 +30,8 @@ class _LocalState extends State<HorizontalList> {
   @override
   Widget build(BuildContext context) {
     _showingList = widget.books;
+    _showingHeader = widget.header;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,7 +39,7 @@ class _LocalState extends State<HorizontalList> {
         Padding(
           padding: const EdgeInsets.all(defaultPadding),
           child: Text(
-            "Best sellers books",
+            _showingHeader,
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
