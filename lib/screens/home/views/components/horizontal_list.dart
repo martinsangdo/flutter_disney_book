@@ -10,9 +10,10 @@ import '../../../../constants.dart';
 class HorizontalList extends StatefulWidget {
   List<Book> books = []; //list of books to show in UI
   String header;  //header of the list
+  bool isShowAll = false; //to show See All or not 
 
   HorizontalList({
-    super.key, required this.books, required this.header
+    super.key, required this.books, required this.header, required this.isShowAll
   });
    @override
   State<HorizontalList> createState() => _LocalState();
@@ -38,13 +39,30 @@ class _LocalState extends State<HorizontalList> {
         const SizedBox(height: defaultPadding / 2),
         Padding(
           padding: const EdgeInsets.all(defaultPadding),
-          child: Text(
-            _showingHeader,
-            style: Theme.of(context).textTheme.titleSmall,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+            children: [
+              Text(
+                _showingHeader,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              if (widget.isShowAll)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailsScreen(detail: _showingList[0]) //todo to show all books
+                        ));
+                  },
+                  child: const Text(
+                    "Show more >>",
+                    style: TextStyle(color: Colors.blue)
+                  )
+                )
+            ],
           ),
         ),
-        // While loading use 👇
-        // const ProductsSkelton(),
         SizedBox(
           height: 220,
           child: ListView.builder(

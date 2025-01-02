@@ -119,11 +119,11 @@ class _HomeState extends State<HomeScreen> {
             //1. Special offers & categories (sliding)
             const SliverToBoxAdapter(child: OffersCarouselAndCategories()),
             //2. List of best sellers
-            SliverToBoxAdapter(child: HorizontalList(header: 'Best sellers', books: _bestSellers)),
+            SliverToBoxAdapter(child: HorizontalList(header: 'Best sellers', books: _bestSellers, isShowAll: false)),
             //3. Disney
             SliverPadding(
               padding: const EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
-              sliver: SliverToBoxAdapter(child: HorizontalList(header: 'Disney', books: _homeBookMap['Disney']!)),
+              sliver: SliverToBoxAdapter(child: HorizontalList(header: 'Disney', books: _homeBookMap['Disney']!, isShowAll: true)),
             ),
             //4. Marvel
             SliverToBoxAdapter(
@@ -143,7 +143,7 @@ class _HomeState extends State<HomeScreen> {
               ),
             ),
             //5. Pixar
-            SliverToBoxAdapter(child: HorizontalList(header: 'Pixar', books: _homeBookMap['Pixar']!)),
+            SliverToBoxAdapter(child: HorizontalList(header: 'Pixar', books: _homeBookMap['Pixar']!, isShowAll: true)),
             //6. Star wars
             const SliverToBoxAdapter(child: MostPopular()),
             SliverToBoxAdapter(
