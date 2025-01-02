@@ -1,6 +1,7 @@
 //author: Sang Do
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:shop/constants.dart';
 import 'package:shop/models/metadata_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'book_model.dart';
@@ -119,7 +120,18 @@ class DatabaseHelper {
       where: 'cat = ?',
       whereArgs: [cat],
       orderBy: "release_time DESC",
-      limit: 20
+      limit: PAGE_SIZE
+    );
+    return result;
+  }
+  //
+  Future<List<Map>> queryLatestBooks(int pageIndex, int pageSize) async {
+    Database db = await instance.db;
+    List<Map> result = await db.query('book',
+      columns: ['*'],
+      orderBy: "release_time DESC",
+      limit: PAGE_SIZE,
+      offset: pageIndex * pageSize
     );
     return result;
   }

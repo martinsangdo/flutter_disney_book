@@ -120,10 +120,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //   return MaterialPageRoute(
     //     builder: (context) => const SearchHistoryScreen(),
     //   );
-    case bookmarkScreenRoute:
-      return MaterialPageRoute(
-        builder: (context) => const BookmarkScreen(),
-      );
+    // case bookmarkScreenRoute:
+    //   return MaterialPageRoute(
+    //     builder: (context) => BookmarkScreen(),
+    //   );
     case entryPointScreenRoute:
       return MaterialPageRoute(
         builder: (context) => const EntryPoint(),

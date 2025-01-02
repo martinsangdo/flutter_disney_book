@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:shop/components/Banner/S/banner_s_style_1.dart';
@@ -26,30 +27,21 @@ class _HomeState extends State<HomeScreen> {
   List<Book> _bestSellers = [];
   Map<String, List<Book>> _homeBookMap = {};  //key: category, values: list of items
   bool _isCompleteFetching = false;  //wait to get books details before showing UI
+  String newArrivalImageUrl = ''; //random url
+  String editorChoiceImageUrl = ''; //random url
 
   //setup Bottom Bar
   int _selectedBottomIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 15, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
-
+  
   void _onItemTapped(int index) {
     setState(() {
       _selectedBottomIndex = index;
     });
+  }
+
+  int getRandomNumberInRange(int max) {
+    final random = Random();
+    return random.nextInt(max); // not Include max in the range
   }
 
   Future<void> _getLatestBooks() async {
@@ -72,6 +64,7 @@ class _HomeState extends State<HomeScreen> {
       }
       //find latest books on each categories
       var home_categories = jsonDecode(_metadata[0]['home_categories']);
+      //
       for (String cat in home_categories){
         var books = await DatabaseHelper.instance.queryByCat(cat);
         if (books.isNotEmpty){
@@ -89,9 +82,15 @@ class _HomeState extends State<HomeScreen> {
         _bestSellers = _bestSellersDb;
         _homeBookMap = homeBookMap;
         _isCompleteFetching = true;
+        //get random book to show in banners
+        String randCat = home_categories[getRandomNumberInRange(home_categories.length)];
+        newArrivalImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
+        editorChoiceImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
       });
     } else {
-
+      setState(() {
+        _isCompleteFetching = true;
+      });
     }
   }
   //
@@ -122,28 +121,31 @@ class _HomeState extends State<HomeScreen> {
             const SliverToBoxAdapter(child: OffersCarouselAndCategories()),
             //2. List of best sellers
             SliverToBoxAdapter(child: HorizontalList(header: 'Best sellers', books: _bestSellers, isShowAll: false)),
-            //3. Disney
+            //3. Latest books
             SliverPadding(
               padding: const EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
-              sliver: SliverToBoxAdapter(child: HorizontalList(header: 'Disney', books: _homeBookMap['Disney']!, isShowAll: true)),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    BannerSStyle1(
+                      title: "New \narrival",
+                      subtitle: "SPECIAL OFFER",
+                      image: DISNEY_IMG_URI + newArrivalImageUrl,
+                      press: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookmarkScreen(appBarTitle: 'New arrival', pageType: 'new_arrival')
+                          ));
+                      },
+                    )
+                  ],
+                ),
+              )
             ),
-            //4. Marvel
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  BannerSStyle1(
-                    title: "New \narrival",
-                    subtitle: "SPECIAL OFFER",
-                    press: () {
-                      Navigator.pushNamed(context, bookmarkScreenRoute);
-                    },
-                  ),
-                  const SizedBox(height: defaultPadding / 4),
-                  // We have 4 banner styles, all in the pro version
-                ],
-              ),
-            ),
-            //
+            //4. Disney
+            SliverToBoxAdapter(child: HorizontalList(header: 'Disney', books: _homeBookMap['Disney']!, isShowAll: true)),
+            //5. Marvel
             SliverToBoxAdapter(child: HorizontalList(header: 'Marvel', books: _homeBookMap['Marvel']!, isShowAll: true)),
             //5. Pixar
             SliverToBoxAdapter(child: HorizontalList(header: 'Pixar', books: _homeBookMap['Pixar']!, isShowAll: true)),
@@ -154,10 +156,9 @@ class _HomeState extends State<HomeScreen> {
                 children: [
                   const SizedBox(height: defaultPadding * 1.5),
                   const SizedBox(height: defaultPadding / 4),
-                  // While loading use 👇
-                  // const BannerSSkelton(),
                   BannerSStyle5(
                     title: "Editor's \ncollections",
+                    image: DISNEY_IMG_URI + editorChoiceImageUrl,
                     press: () {
                       Navigator.pushNamed(context, onSaleScreenRoute);
                     },

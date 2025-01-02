@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shop/components/cart_button.dart';
-import 'package:shop/components/custom_modal_bottom_sheet.dart';
 import 'package:shop/components/product/product_card.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/globals.dart';
 import 'package:shop/models/book_model.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'components/product_images.dart';
 import 'components/product_info.dart';
-import 'product_buy_now_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   Book detail;
