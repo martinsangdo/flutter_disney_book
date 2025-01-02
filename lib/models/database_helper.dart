@@ -107,7 +107,7 @@ class DatabaseHelper {
 
   Future<List<Map>> queryBookIn(List<dynamic> slugs) async {
     Database db = await instance.db;
-    return await db.query('book', columns: ['slug', 'title', 'cat', 'image', 'release_time'], 
+    return await db.query('book', columns: ['slug', 'title', 'cat', 'image', 'description'], 
       where: 'slug IN (${slugs.map((e) => "?").join(', ')})', 
       whereArgs: slugs);
   }
@@ -115,7 +115,7 @@ class DatabaseHelper {
   Future<List<Map>> queryByCat(String cat) async {
     Database db = await instance.db;
     List<Map> result = await db.query('book',
-      columns: ['slug', 'title', 'cat', 'image'],
+      columns: ['slug', 'title', 'cat', 'image', 'description'],
       where: 'cat = ?',
       whereArgs: [cat],
       orderBy: "release_time DESC",

@@ -7,6 +7,7 @@ import 'package:shop/constants.dart';
 import 'package:shop/models/book_model.dart';
 import 'package:shop/models/database_helper.dart';
 import 'package:shop/route/screen_export.dart';
+import 'package:shop/screens/home/views/components/horizontal_list.dart';
 
 import 'components/best_sellers.dart';
 import 'components/flash_sale.dart';
@@ -23,9 +24,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeScreen> {
-  Map<String, List<Book>> _homeBookMap = {
-    // 'Pixar': []
-  };
+  List<Book> _bestSellers = [];
+  Map<String, List<Book>> _homeBookMap = {};  //key: category, values: list of items
   bool _isCompleteFetching = false;  //wait to get books details before showing UI
 
   //setup Bottom Bar
@@ -55,8 +55,22 @@ class _HomeState extends State<HomeScreen> {
 
   Future<void> _getLatestBooks() async {
     Map<String, List<Book>> homeBookMap = {};
-    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories FROM metadata', []);
+    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories,best_sellers FROM metadata', []);
     if (_metadata.isNotEmpty){
+      //find best seller books
+      List<Book> _bestSellersDb = [];
+      List<dynamic> best_sellers_slugs = jsonDecode(_metadata[0]['best_sellers']);
+      final books = await DatabaseHelper.instance.queryBookIn(best_sellers_slugs);
+      if (books.isNotEmpty){
+        for (Map book in books){
+          _bestSellersDb.add(Book(slug: book['slug'],
+              title: book['title'], cat: book['cat'], image: book['image'], description: book['description']));
+        }
+        setState(() {
+          
+        });
+      }
+      //find latest books on each categories
       var home_categories = jsonDecode(_metadata[0]['home_categories']);
       for (String cat in home_categories){
         var books = await DatabaseHelper.instance.queryByCat(cat);
@@ -70,6 +84,7 @@ class _HomeState extends State<HomeScreen> {
         }
       }
       setState(() {
+        _bestSellers = _bestSellersDb;
         _homeBookMap = homeBookMap;
         _isCompleteFetching = true;
       });
@@ -90,7 +105,6 @@ class _HomeState extends State<HomeScreen> {
   //
   @override
   Widget build(BuildContext context) {
-    // _isCompleteFetching = widget != null && widget.isCompleteFetching != null;
     if (!_isCompleteFetching){
       return const Scaffold(
         body: Center(
@@ -105,7 +119,7 @@ class _HomeState extends State<HomeScreen> {
             //1. Special offers & categories (sliding)
             const SliverToBoxAdapter(child: OffersCarouselAndCategories()),
             //2. List of best sellers
-            const SliverToBoxAdapter(child: PopularProducts()),
+            SliverToBoxAdapter(child: HorizontalList(books: _bestSellers)),
             //3. Disney
             SliverPadding(
               padding: const EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
@@ -115,8 +129,6 @@ class _HomeState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  // While loading use 👇
-                  // const BannerMSkelton(),‚
                   BannerSStyle1(
                     title: "New \narrival",
                     subtitle: "SPECIAL OFFER",
@@ -131,7 +143,7 @@ class _HomeState extends State<HomeScreen> {
               ),
             ),
             //5. Pixar
-            const SliverToBoxAdapter(child: BestSellers()),
+            SliverToBoxAdapter(child: HorizontalList(books: _homeBookMap['Pixar']!)),
             //6. Star wars
             const SliverToBoxAdapter(child: MostPopular()),
             SliverToBoxAdapter(

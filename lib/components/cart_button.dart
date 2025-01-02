@@ -5,13 +5,13 @@ import '../constants.dart';
 class CartButton extends StatelessWidget {
   const CartButton({
     super.key,
-    required this.price,
+    this.price,
     this.title = "Buy Now",
     this.subTitle = "Unit price",
     required this.press,
   });
 
-  final double price;
+  final double? price;
   final String title, subTitle;
   final VoidCallback press;
 
@@ -35,32 +35,6 @@ class CartButton extends StatelessWidget {
               onTap: press,
               child: Row(
                 children: [
-                  Expanded(
-                    flex: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: defaultPadding),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "\$${price.toStringAsFixed(2)}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: Colors.white),
-                          ),
-                          Text(
-                            subTitle,
-                            style: const TextStyle(
-                                color: Colors.white54,
-                                fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
                   Expanded(
                     flex: 3,
                     child: Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/entry_point.dart';
+import 'package:shop/models/book_model.dart';
 
 import 'screen_export.dart';
 
@@ -69,13 +70,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //   return MaterialPageRoute(
     //     builder: (context) => const SetupFaceIdScreen(),
     //   );
-    case productDetailsScreenRoute:
-      return MaterialPageRoute(
-        builder: (context) {
-          bool isProductAvailable = settings.arguments as bool? ?? true;
-          return ProductDetailsScreen(isProductAvailable: isProductAvailable);
-        },
-      );
+    // case productDetailsScreenRoute:
+    //   return MaterialPageRoute(
+    //     builder: (context) {
+    //       return ProductDetailsScreen(detail: Book(slug:'111',title:'23',image:'',cat:''));
+    //     },
+    //   );
     case productReviewsScreenRoute:
       return MaterialPageRoute(
         builder: (context) => const ProductReviewsScreen(),
