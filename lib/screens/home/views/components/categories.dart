@@ -86,9 +86,11 @@ class _CategoriesState extends State<Categories> {
                 svgSrc: _homeCategories[index].svgSrc,
                 isActive: index == 0,
                 press: () {
-                  if (_homeCategories[index].route != null) {
-                    Navigator.pushNamed(context, _homeCategories[index].route!);
-                  }
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookmarkScreen(appBarTitle: _homeCategories[index].name, pageType: 'category')
+                          ));
                 },
               ),
             ),

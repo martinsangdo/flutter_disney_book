@@ -46,7 +46,7 @@ class _LocalState extends State<BookmarkScreen> {
     }
   }
   //get books of 1 category
-  void _fetchCatBooks() async{
+  void _fetchCatBooksByCat() async{
     var books = await DatabaseHelper.instance.queryByCatPagination(widget.appBarTitle, _currentPage, DOUBLE_PAGE_SIZE);
     if (books.isNotEmpty){
       List<Book> basicBooks = [];
@@ -56,8 +56,6 @@ class _LocalState extends State<BookmarkScreen> {
               image: book['image'], description: book['description'],
               amazon: book['amazon']));
           }
-          //get total books in the cat
-          
           setState(() {
             showingBooks = basicBooks;
             _isCompleteFetching = true;
@@ -81,22 +79,54 @@ class _LocalState extends State<BookmarkScreen> {
     return _totalPage;
   }
 
+//get books of 1 category
+  void _fetchCatBooksByEditor() async{
+    var books = await DatabaseHelper.instance.queryByFormat('Print, E-Book & Audio', DOUBLE_PAGE_SIZE);
+    if (books.isNotEmpty){
+      List<Book> basicBooks = [];
+          for (Map book in books){
+            basicBooks.add(Book(slug: book['slug'],
+              title: book['title'], cat: book['cat'], 
+              image: book['image'], description: book['description'],
+              amazon: book['amazon']));
+          }
+          setState(() {
+            showingBooks = basicBooks;
+            _isCompleteFetching = true;
+          });
+    } else {
+        setState(() {
+            _isCompleteFetching = true;
+        });
+    }
+  }
+  //
+  void _loadBooks(){
+    if (widget.pageType == 'new_arrival'){
+          _fetchLatestBooks();
+      } else if (widget.pageType == 'category'){
+          _fetchCatBooksByCat();
+      } else if (widget.pageType == 'editor_choice'){
+          _fetchCatBooksByEditor();
+      } 
+  }
 
   @override
   void initState() {
       super.initState();
-      if (widget.pageType == 'new_arrival'){
-          _fetchLatestBooks();
-      } else if (widget.pageType == 'category'){
-          _fetchTotalPages().then((pageTotal){
+      if (widget.pageType == 'category'){
+        //maybe has pagination
+        _fetchTotalPages().then((pageTotal){
             setState(() {
               totalPage = pageTotal;
             });
             Future.microtask(() { 
-              _fetchCatBooks();
+              _loadBooks();
             });
           });
-      } 
+      } else {
+        _loadBooks();
+      }
   }
   @override
   Widget build(BuildContext context) {
@@ -161,7 +191,7 @@ class _LocalState extends State<BookmarkScreen> {
                 _currentPage = index;
               });
               Future.microtask(() { 
-                _fetchCatBooks();
+                _loadBooks();
               });
             },
           ),

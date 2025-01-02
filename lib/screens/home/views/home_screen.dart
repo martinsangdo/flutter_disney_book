@@ -160,7 +160,11 @@ class _HomeState extends State<HomeScreen> {
                     title: "Editor's \ncollections",
                     image: DISNEY_IMG_URI + editorChoiceImageUrl,
                     press: () {
-                      Navigator.pushNamed(context, onSaleScreenRoute);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookmarkScreen(appBarTitle: 'Editor Choices', pageType: 'editor_choice')
+                          ));
                     },
                   ),
                   const SizedBox(height: defaultPadding / 4),

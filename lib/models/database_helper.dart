@@ -158,7 +158,18 @@ class DatabaseHelper {
     );
     return result;
   }
-
+  //query by book format
+  Future<List<Map>> queryByFormat(String format, int pageSize) async {
+    Database db = await instance.db;
+    List<Map> result = await db.query('book',
+      columns: ['*'],
+      where: 'format = ?',
+      whereArgs: [format],
+      orderBy: "release_time DESC",
+      limit: pageSize
+    );
+    return result;
+  }
   /////////////// METADATA
   Future<int> insertMetadata(MetaDataModel newMetadata) async {
     Database db = await instance.db;
