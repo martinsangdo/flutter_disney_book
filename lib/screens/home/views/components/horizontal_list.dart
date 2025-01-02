@@ -50,13 +50,13 @@ class _LocalState extends State<HorizontalList> {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductDetailsScreen(detail: _showingList[0]) //todo to show all books
-                        ));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookmarkScreen(appBarTitle: _showingHeader, pageType: 'category')
+                          ));
                   },
                   child: const Text(
-                    "Show more >>",
+                    "Show all >>",
                     style: TextStyle(color: Colors.blue)
                   )
                 )

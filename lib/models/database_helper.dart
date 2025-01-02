@@ -124,13 +124,36 @@ class DatabaseHelper {
     );
     return result;
   }
+  //get books by categories with pagination
+  Future<List<Map>> queryByCatPagination(String cat, int pageIndex, int pageSize) async {
+    Database db = await instance.db;
+    List<Map> result = await db.query('book',
+      columns: ['*'],
+      where: 'cat = ?',
+      whereArgs: [cat],
+      orderBy: "release_time DESC",
+      limit: pageSize,
+      offset: pageIndex * pageSize
+    );
+    return result;
+  }
+  //get books by categories with pagination
+  Future<List<Map>> queryByCatTotal(String cat) async {
+    Database db = await instance.db;
+    List<Map> result = await db.query('book',
+      columns: ['count(*) AS total'],
+      where: 'cat = ?',
+      whereArgs: [cat]
+    );
+    return result;
+  }
   //
   Future<List<Map>> queryLatestBooks(int pageIndex, int pageSize) async {
     Database db = await instance.db;
     List<Map> result = await db.query('book',
       columns: ['*'],
       orderBy: "release_time DESC",
-      limit: PAGE_SIZE,
+      limit: pageSize,
       offset: pageIndex * pageSize
     );
     return result;

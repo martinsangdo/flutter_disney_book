@@ -81,6 +81,8 @@ final emaildValidator = MultiValidator([
 const pasNotMatchErrorText = "passwords do not match";
 //
 const PAGE_SIZE = 20; //20 items per page
+const DOUBLE_PAGE_SIZE = PAGE_SIZE * 2;
+
 const DISNEY_METADATA_URL = 'https://api.npoint.io/07d2438818d3637e64c4';
 const DISNEY_IMG_URI = 'https://books.disney.com/content/uploads/';
 

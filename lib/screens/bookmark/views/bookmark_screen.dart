@@ -3,14 +3,14 @@ import 'package:number_paginator/number_paginator.dart';
 import 'package:shop/components/product/product_card.dart';
 import 'package:shop/models/book_model.dart';
 import 'package:shop/models/database_helper.dart';
-import 'package:shop/models/product_model.dart';
 import 'package:shop/route/route_constants.dart';
+import 'package:shop/screens/product/views/product_details_screen.dart';
 
 import '../../../constants.dart';
 //all books in a category
 class BookmarkScreen extends StatefulWidget {
   String pageType = 'category'; //or 'bookmark'
-  String appBarTitle = '';
+  String appBarTitle = '';  //can be category name
 
   BookmarkScreen({super.key, required this.appBarTitle, required this.pageType});
 
@@ -22,10 +22,10 @@ class _LocalState extends State<BookmarkScreen> {
   bool _isCompleteFetching = false;  //wait to get books details before showing UI
   List<Book> showingBooks = [];
   int _currentPage = 0; //start from 0
-  int totalPage = 0;
-  
+  int totalPage = 1;
+  //get latest books
   void _fetchLatestBooks() async{
-    var books = await DatabaseHelper.instance.queryLatestBooks(_currentPage, PAGE_SIZE * 2);
+    var books = await DatabaseHelper.instance.queryLatestBooks(_currentPage, DOUBLE_PAGE_SIZE);
     if (books.isNotEmpty){
       List<Book> basicBooks = [];
           for (Map book in books){
@@ -42,17 +42,61 @@ class _LocalState extends State<BookmarkScreen> {
     } else {
         setState(() {
             _isCompleteFetching = true;
-            totalPage = 0;
         });
     }
   }
+  //get books of 1 category
+  void _fetchCatBooks() async{
+    var books = await DatabaseHelper.instance.queryByCatPagination(widget.appBarTitle, _currentPage, DOUBLE_PAGE_SIZE);
+    if (books.isNotEmpty){
+      List<Book> basicBooks = [];
+          for (Map book in books){
+            basicBooks.add(Book(slug: book['slug'],
+              title: book['title'], cat: book['cat'], 
+              image: book['image'], description: book['description'],
+              amazon: book['amazon']));
+          }
+          //get total books in the cat
+          
+          setState(() {
+            showingBooks = basicBooks;
+            _isCompleteFetching = true;
+          });
+    } else {
+        setState(() {
+            _isCompleteFetching = true;
+        });
+    }
+  }
+  //get total of items
+  Future<int> _fetchTotalPages() async{
+    int _totalPage = 1;
+    var bookTotal = await DatabaseHelper.instance.queryByCatTotal(widget.appBarTitle);
+    if (bookTotal.isNotEmpty){
+      if (bookTotal[0]['total'] >= DOUBLE_PAGE_SIZE){
+        //we have more than 1 page
+        _totalPage = (bookTotal[0]['total'] / DOUBLE_PAGE_SIZE).ceil();
+      }
+    }
+    return _totalPage;
+  }
+
 
   @override
   void initState() {
       super.initState();
       if (widget.pageType == 'new_arrival'){
           _fetchLatestBooks();
-      }
+      } else if (widget.pageType == 'category'){
+          _fetchTotalPages().then((pageTotal){
+            setState(() {
+              totalPage = pageTotal;
+            });
+            Future.microtask(() { 
+              _fetchCatBooks();
+            });
+          });
+      } 
   }
   @override
   Widget build(BuildContext context) {
@@ -93,7 +137,11 @@ class _LocalState extends State<BookmarkScreen> {
                     brandName: showingBooks[index].cat,
                     title: showingBooks[index].title,
                     press: () {
-                      Navigator.pushNamed(context, productDetailsScreenRoute);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailsScreen(detail: showingBooks[index]),
+                        ));
                     },
                   );
                 },
@@ -103,7 +151,7 @@ class _LocalState extends State<BookmarkScreen> {
           ),
         ],
       )),
-        bottomNavigationBar: (totalPage > 0) ? Card(
+        bottomNavigationBar: (totalPage > 1) ? Card(
           margin: EdgeInsets.zero,
           child: NumberPaginator(
             // by default, the paginator shows numbers as center content
@@ -111,6 +159,9 @@ class _LocalState extends State<BookmarkScreen> {
             onPageChange: (int index) { //start from 0
               setState(() {
                 _currentPage = index;
+              });
+              Future.microtask(() { 
+                _fetchCatBooks();
               });
             },
           ),
