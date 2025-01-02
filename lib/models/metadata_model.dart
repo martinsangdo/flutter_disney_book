@@ -32,7 +32,7 @@ class MetaDataModel {
       update_time: json['update_time'] as int,
       best_sellers: jsonEncode(json['best_sellers']),
       home_categories: jsonEncode(json['home_categories']),
-      affiliate_post_fix: jsonEncode(json['affiliate_post_fix'])
+      affiliate_post_fix: json['affiliate_post_fix'] as String
     );
   }
 

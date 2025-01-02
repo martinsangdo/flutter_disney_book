@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/components/Banner/S/banner_s_style_1.dart';
 import 'package:shop/components/Banner/S/banner_s_style_5.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/globals.dart';
 import 'package:shop/models/book_model.dart';
 import 'package:shop/models/database_helper.dart';
 import 'package:shop/route/screen_export.dart';
@@ -55,8 +56,10 @@ class _HomeState extends State<HomeScreen> {
 
   Future<void> _getLatestBooks() async {
     Map<String, List<Book>> homeBookMap = {};
-    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories,best_sellers FROM metadata', []);
+    final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories,best_sellers,affiliate_post_fix FROM metadata', []);
     if (_metadata.isNotEmpty){
+      //save post fix
+      global_affiliate_post_fix = _metadata[0]['affiliate_post_fix'];
       //find best seller books
       List<Book> _bestSellersDb = [];
       List<dynamic> best_sellers_slugs = jsonDecode(_metadata[0]['best_sellers']);
@@ -66,9 +69,6 @@ class _HomeState extends State<HomeScreen> {
           _bestSellersDb.add(Book(slug: book['slug'],
               title: book['title'], cat: book['cat'], image: book['image'], description: book['description']));
         }
-        setState(() {
-          
-        });
       }
       //find latest books on each categories
       var home_categories = jsonDecode(_metadata[0]['home_categories']);
