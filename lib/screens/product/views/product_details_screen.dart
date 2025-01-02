@@ -6,6 +6,8 @@ import 'package:shop/components/product/product_card.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/globals.dart';
 import 'package:shop/models/book_model.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'components/product_images.dart';
 import 'components/product_info.dart';
 import 'product_buy_now_screen.dart';
@@ -26,6 +28,22 @@ class _LocalState extends State<ProductDetailsScreen> {
   void initState() {
       super.initState();
   }
+  //open link in Chrome
+  void _launchURL(String ext_url) async {
+    if (ext_url.isEmpty){
+      return;
+    }
+    ext_url = AMAZON_URI + ext_url;
+    if (global_affiliate_post_fix.isNotEmpty){
+      if (!ext_url.contains('?')){
+        ext_url += '?t=1';  //try to add dummy param
+      }
+      ext_url += global_affiliate_post_fix;
+    }
+    if (!await launchUrlString(ext_url, mode: LaunchMode.externalApplication)) {
+        throw Exception('Could not launch $ext_url');
+    }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +52,7 @@ class _LocalState extends State<ProductDetailsScreen> {
     return Scaffold(
       bottomNavigationBar:CartButton(
               press: () {
-                customModalBottomSheet(
-                  context,
-                  height: MediaQuery.of(context).size.height * 0.92,
-                  child: const ProductBuyNowScreen(),
-                );
+                _launchURL(_showingDetail.amazon!);
               },
             ),
       body: SafeArea(

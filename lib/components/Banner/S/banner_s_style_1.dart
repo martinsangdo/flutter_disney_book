@@ -12,12 +12,12 @@ class BannerSStyle1 extends StatelessWidget {
     required this.title,
     required this.press,
     this.subtitle,
-    required this.discountParcent,
+    this.discountParcent,
   });
   final String? image;
   final String title;
   final String? subtitle;
-  final int discountParcent;
+  final int? discountParcent;
   final VoidCallback press;
 
   @override
@@ -78,14 +78,7 @@ class BannerSStyle1 extends StatelessWidget {
               ),
             ],
           ),
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: BannerDiscountTag(
-            percentage: discountParcent,
-            height: 56,
-          ),
-        ),
+        )
       ],
     );
   }

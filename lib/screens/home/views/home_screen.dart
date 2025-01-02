@@ -11,10 +11,8 @@ import 'package:shop/route/screen_export.dart';
 import 'package:shop/screens/home/views/components/horizontal_list.dart';
 
 import 'components/best_sellers.dart';
-import 'components/flash_sale.dart';
 import 'components/most_popular.dart';
 import 'components/offer_carousel_and_categories.dart';
-import 'components/popular_products.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -67,7 +65,9 @@ class _HomeState extends State<HomeScreen> {
       if (books.isNotEmpty){
         for (Map book in books){
           _bestSellersDb.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], image: book['image'], description: book['description']));
+              title: book['title'], cat: book['cat'], 
+              image: book['image'], description: book['description'],
+              amazon: book['amazon']));
         }
       }
       //find latest books on each categories
@@ -78,7 +78,9 @@ class _HomeState extends State<HomeScreen> {
           List<Book> basicBooks = [];
           for (Map book in books){
             basicBooks.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], image: book['image'], description: book['description']));
+              title: book['title'], cat: book['cat'], 
+              image: book['image'], description: book['description'],
+              amazon: book['amazon']));
           }
           homeBookMap[cat] = basicBooks;
         }
@@ -132,9 +134,8 @@ class _HomeState extends State<HomeScreen> {
                   BannerSStyle1(
                     title: "New \narrival",
                     subtitle: "SPECIAL OFFER",
-                    discountParcent: 50,
                     press: () {
-                      Navigator.pushNamed(context, onSaleScreenRoute);
+                      Navigator.pushNamed(context, bookmarkScreenRoute);
                     },
                   ),
                   const SizedBox(height: defaultPadding / 4),
@@ -142,22 +143,21 @@ class _HomeState extends State<HomeScreen> {
                 ],
               ),
             ),
+            //
+            SliverToBoxAdapter(child: HorizontalList(header: 'Marvel', books: _homeBookMap['Marvel']!, isShowAll: true)),
             //5. Pixar
             SliverToBoxAdapter(child: HorizontalList(header: 'Pixar', books: _homeBookMap['Pixar']!, isShowAll: true)),
             //6. Star wars
-            const SliverToBoxAdapter(child: MostPopular()),
+            SliverToBoxAdapter(child: HorizontalList(header: 'Star Wars', books: _homeBookMap['Star Wars']!, isShowAll: true)),
             SliverToBoxAdapter(
               child: Column(
                 children: [
                   const SizedBox(height: defaultPadding * 1.5),
-
                   const SizedBox(height: defaultPadding / 4),
                   // While loading use 👇
                   // const BannerSSkelton(),
                   BannerSStyle5(
-                    title: "Black \nfriday",
-                    subtitle: "50% Off",
-                    bottomText: "Collection".toUpperCase(),
+                    title: "Editor's \ncollections",
                     press: () {
                       Navigator.pushNamed(context, onSaleScreenRoute);
                     },
@@ -167,7 +167,9 @@ class _HomeState extends State<HomeScreen> {
               ),
             ),
             //National Geographic
-            const SliverToBoxAdapter(child: BestSellers()),
+            SliverToBoxAdapter(child: HorizontalList(header: 'National Geographic', books: _homeBookMap['National Geographic']!, isShowAll: true)),
+            //
+            SliverToBoxAdapter(child: HorizontalList(header: 'Young Adult', books: _homeBookMap['Young Adult']!, isShowAll: true)),
           ],
         ),
       ),  //end body

@@ -82,3 +82,5 @@ const pasNotMatchErrorText = "passwords do not match";
 //
 const DISNEY_METADATA_URL = 'https://api.npoint.io/07d2438818d3637e64c4';
 const DISNEY_IMG_URI = 'https://books.disney.com/content/uploads/';
+
+const AMAZON_URI = 'https://amazon.com/';

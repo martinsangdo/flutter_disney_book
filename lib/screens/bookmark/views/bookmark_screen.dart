@@ -4,7 +4,7 @@ import 'package:shop/models/product_model.dart';
 import 'package:shop/route/route_constants.dart';
 
 import '../../../constants.dart';
-
+//all books in a category
 class BookmarkScreen extends StatelessWidget {
   const BookmarkScreen({super.key});
 
