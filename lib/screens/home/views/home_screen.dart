@@ -37,6 +37,11 @@ class _HomeState extends State<HomeScreen> {
     setState(() {
       _selectedBottomIndex = index;
     });
+    if (context.mounted){
+      if (index == 1){
+        Navigator.pushNamed(context, discoverScreenRoute);  //Catetories pages
+      }
+    }
   }
 
   int getRandomNumberInRange(int max) {
@@ -178,7 +183,6 @@ class _HomeState extends State<HomeScreen> {
           ],
         ),
       ),  //end body
-//bottom bar
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -24,7 +24,10 @@ final List<CategoryModel> demoCategories = [
     svgSrc: "assets/icons/Sale.svg",
     subCategories: [
       CategoryModel(title: "All Clothing"),
-      CategoryModel(title: "New In"),
+      CategoryModel(title: "New In", subCategories: [
+        CategoryModel(title: "111"),
+        CategoryModel(title: "222"),
+      ]),
       CategoryModel(title: "Coats & Jackets"),
       CategoryModel(title: "Dresses"),
       CategoryModel(title: "Jeans"),

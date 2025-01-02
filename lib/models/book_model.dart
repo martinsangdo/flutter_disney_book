@@ -16,6 +16,7 @@ class Book {
     late String? description;
     late String? illustration;
     late int? release_time;
+    late bool? isBookmarked;  //user bookmarked this book or not
 
   Book({
     this.isbn,
@@ -28,6 +29,7 @@ class Book {
     this.description, 
     this.illustration, 
     this.release_time,
+    this.isBookmarked,
     required this.slug,
     required this.title,
     required this.cat,
@@ -35,12 +37,8 @@ class Book {
   });
 
   Book.empty(this.slug);
-
+  //parse JSON data into Book object
   factory Book.fromJson(Map<String, dynamic> json) {
-    // List<OtherBooks> others = List.empty();
-    // if (json['others'] != null){
-    //   others = json['others'].map<OtherBooks>((json) => OtherBooks.fromJson(json)).toList();
-    // }
     int page_num = 0;
     if (json['page_num'] != null && json['page_num'] != ""){
       page_num = int.parse(json['page_num']);
@@ -62,7 +60,7 @@ class Book {
       image: json['image'] as String
     );
   }
-
+  //convert to book detail before saving to DB
   Map<String, dynamic> toMap() {
     return {
       'isbn': isbn,

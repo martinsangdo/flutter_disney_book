@@ -3,13 +3,12 @@ import 'package:number_paginator/number_paginator.dart';
 import 'package:shop/components/product/product_card.dart';
 import 'package:shop/models/book_model.dart';
 import 'package:shop/models/database_helper.dart';
-import 'package:shop/route/route_constants.dart';
 import 'package:shop/screens/product/views/product_details_screen.dart';
 
 import '../../../constants.dart';
 //all books in a category
 class BookmarkScreen extends StatefulWidget {
-  String pageType = 'category'; //or 'bookmark'
+  String pageType = 'category'; //or bookmark, new_arrival, editor_choice
   String appBarTitle = '';  //can be category name
 
   BookmarkScreen({super.key, required this.appBarTitle, required this.pageType});
