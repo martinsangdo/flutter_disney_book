@@ -169,6 +169,18 @@ class DatabaseHelper {
     );
     return result;
   }
+  //
+  Future<List<Map>> searchBooks(String keyword, int pageSize) async {
+    Database db = await instance.db;
+    List<Map> result = await db.query('book',
+      columns: ['*'],
+      where: 'title LIKE ?',
+      whereArgs: ['%$keyword%'],
+      orderBy: "release_time DESC",
+      limit: pageSize
+    );
+    return result;
+  }
   /////////////// METADATA
   Future<int> insertMetadata(MetaDataModel newMetadata) async {
     Database db = await instance.db;

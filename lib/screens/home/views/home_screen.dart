@@ -40,6 +40,8 @@ class _HomeState extends State<HomeScreen> {
     if (context.mounted){
       if (index == 1){
         Navigator.pushNamed(context, discoverScreenRoute);  //Catetories pages
+      } else if (index == 2){
+        Navigator.pushNamed(context, searchScreenRoute);  //Search page
       }
     }
   }
@@ -190,12 +192,12 @@ class _HomeState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
+            icon: Icon(Icons.category),
             label: 'Categories',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Favorites',
+            icon: Icon(Icons.search),
+            label: 'Search',
           ),
         ],
         currentIndex: _selectedBottomIndex,

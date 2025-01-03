@@ -38,7 +38,7 @@ class SearchForm extends StatelessWidget {
         validator: validator,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
-          hintText: "Find something...",
+          hintText: "Type something ...",
           filled: false,
           border: secodaryOutlineInputBorder(context),
           enabledBorder: secodaryOutlineInputBorder(context),
@@ -48,27 +48,6 @@ class SearchForm extends StatelessWidget {
               "assets/icons/Search.svg",
               height: 24,
               color: Theme.of(context).iconTheme.color!.withOpacity(0.3),
-            ),
-          ),
-          suffixIcon: SizedBox(
-            width: 40,
-            child: Row(
-              children: [
-                const SizedBox(
-                  height: 24,
-                  child: VerticalDivider(width: 1),
-                ),
-                Expanded(
-                  child: IconButton(
-                    onPressed: onTabFilter,
-                    icon: SvgPicture.asset(
-                      "assets/icons/Filter.svg",
-                      height: 24,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
         ),

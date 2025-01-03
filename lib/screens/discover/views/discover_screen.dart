@@ -29,6 +29,8 @@ class _PageState extends State<DiscoverScreen> {
     if (context.mounted){
       if (index == 0){
         Navigator.pushNamed(context, homeScreenRoute);  //Home page
+      } else if (index == 2){
+        Navigator.pushNamed(context, searchScreenRoute);  //Search page
       }
     }
   }
@@ -84,7 +86,6 @@ class _PageState extends State<DiscoverScreen> {
           children: [
             const Padding(
               padding: EdgeInsets.all(defaultPadding),
-              child: SearchForm(),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -117,12 +118,12 @@ class _PageState extends State<DiscoverScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
+            icon: Icon(Icons.category),
             label: 'Categories',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Favorites',
+            icon: Icon(Icons.search),
+            label: 'Search',
           ),
         ],
         currentIndex: _selectedBottomIndex,

@@ -104,6 +104,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const DiscoverScreen(),
       );
+    case searchScreenRoute:
+      return MaterialPageRoute(
+        builder: (context) => const SearchScreen(),
+      );
     case onSaleScreenRoute:
       return MaterialPageRoute(
         builder: (context) => const OnSaleScreen(),
@@ -112,10 +116,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const KidsScreen(),
       );
-    case searchScreenRoute:
-      return MaterialPageRoute(
-        builder: (context) => const SearchScreen(),
-      );
+    // case searchScreenRoute:
+    //   return MaterialPageRoute(
+    //     builder: (context) => const SearchScreen(),
+    //   );
     // case searchHistoryScreenRoute:
     //   return MaterialPageRoute(
     //     builder: (context) => const SearchHistoryScreen(),

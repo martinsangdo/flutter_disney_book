@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:shop/components/cart_button.dart';
 import 'package:shop/components/product/product_card.dart';
 import 'package:shop/constants.dart';
@@ -58,13 +57,6 @@ class _LocalState extends State<ProductDetailsScreen> {
             SliverAppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               floating: true,
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset("assets/icons/Bookmark.svg",
-                      color: Theme.of(context).textTheme.bodyLarge!.color),
-                ),
-              ],
             ),
             ProductImages(
               images: [DISNEY_IMG_URI + _showingDetail.image],
