@@ -51,7 +51,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
           }
         } else if (metadataObjFromCloud.uuid != ""){
-          debugPrint('Metadata existed in db: ' + metadataInDB[0]['update_time'].toString());
+          debugPrint('Metadata existed in db time: ${metadataInDB[0]['update_time']}');
           //compare update_time
           var updateTimeInDB =  metadataInDB[0]['update_time'];
           var updateTimeInCloud =  metadataObjFromCloud.update_time;

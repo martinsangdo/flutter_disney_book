@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shop/components/cart_button.dart';
 import 'package:shop/components/product/product_card.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/globals.dart';
 import 'package:shop/models/book_model.dart';
+import 'package:shop/models/database_helper.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'components/product_images.dart';
 import 'components/product_info.dart';
@@ -20,10 +23,12 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _LocalState extends State<ProductDetailsScreen> {
   late Book _showingDetail;
+  List<Map<String, dynamic>> _otherList = [];
 
   @override
   void initState() {
       super.initState();
+      _fetchOtherBooks();
   }
 
   String timestampToReadableDateString(int timestamp) {
@@ -48,11 +53,35 @@ class _LocalState extends State<ProductDetailsScreen> {
         throw Exception('Could not launch $ext_url');
     }
 }
+//
+  void _fetchOtherBooks() async{
+    if (widget.detail.others != null && widget.detail.others != ''){
+      String _others = jsonDecode(widget.detail.others!);
+      List<dynamic> othersList = jsonDecode(_others);
+      List<Map<String, dynamic>> _otherDetailsList = [];  //with more book details to show
+      for (Map other in othersList){
+        if (other['slugs'].isNotEmpty && other['slugs'].length > 0){
+          //query more books data
+          final books = await DatabaseHelper.instance.queryBookIn(other['slugs']);
+          if (books.isNotEmpty){
+            List<Book> _bookDetails = [];
+            for (Map book in books){
+              _bookDetails.add(Book.convert(book));
+            }
+            //add to the map
+            _otherDetailsList.add({'title': other['title'], 'list': _bookDetails});
+          }
+        }
+      }
+      setState((){
+        _otherList = _otherDetailsList;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final _showingDetail = widget.detail;
-
     return Scaffold(
       bottomNavigationBar:CartButton(
               press: () {
@@ -164,35 +193,83 @@ class _LocalState extends State<ProductDetailsScreen> {
                 )
               ),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.all(defaultPadding),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  "You may also like",
-                  style: Theme.of(context).textTheme.titleSmall!,
+            //other list 1
+            if (_otherList.isNotEmpty)
+              SliverPadding(
+                padding: const EdgeInsets.all(defaultPadding),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    _otherList[0]['title'],
+                    style: Theme.of(context).textTheme.titleSmall!,
+                  ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 220,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.only(
-                        left: defaultPadding,
-                        right: index == 4 ? defaultPadding : 0),
-                    child: ProductCard(
-                      image: productDemoImg2,
-                      title: "Sleeveless Tiered Dobby Swing Dress",
-                      brandName: "LIPSY LONDON",
-                      press: () {},
+            if (_otherList.isNotEmpty && _otherList[0]['list'].isNotEmpty)
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 220,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _otherList[0]['list'].length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: EdgeInsets.only(
+                          left: defaultPadding,
+                          right: index == 4 ? defaultPadding : 0),
+                      child: ProductCard(
+                        image: DISNEY_IMG_URI + _otherList[0]['list'][index].image,
+                        title: _otherList[0]['list'][index].title,
+                        brandName: _otherList[0]['list'][index].cat,
+                        press: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetailsScreen(detail: _otherList[0]['list'][index]),
+                            ));
+                        },
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+            //other list 2 (optional)
+            if (_otherList.isNotEmpty && _otherList.length > 1)
+              SliverPadding(
+                padding: const EdgeInsets.all(defaultPadding),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    _otherList[1]['title'],
+                    style: Theme.of(context).textTheme.titleSmall!,
+                  ),
+                ),
+              ),
+            if (_otherList.isNotEmpty && _otherList.length > 1 && _otherList[1]['list'].isNotEmpty)
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 220,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _otherList[1]['list'].length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: EdgeInsets.only(
+                          left: defaultPadding,
+                          right: index == 4 ? defaultPadding : 0),
+                      child: ProductCard(
+                        image: DISNEY_IMG_URI + _otherList[1]['list'][index].image,
+                        title: _otherList[1]['list'][index].title,
+                        brandName: _otherList[1]['list'][index].cat,
+                        press: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetailsScreen(detail: _otherList[1]['list'][index]),
+                            ));
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            //end
             const SliverToBoxAdapter(
               child: SizedBox(height: defaultPadding),
             )

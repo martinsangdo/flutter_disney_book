@@ -53,7 +53,6 @@ class _CategoriesState extends State<Categories> {
   Future<void> _fetchMetadata() async {
     final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories FROM metadata', []);
     if (_metadata.isNotEmpty){
-      // debugPrint(_metadata[0]['home_categories']);
       var home_categories = jsonDecode(_metadata[0]['home_categories']);
       List<CategoryModel> _homeCat = [];
       _homeCat.add(CategoryModel(name: "All categories"));  //default
