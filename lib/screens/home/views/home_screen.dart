@@ -11,8 +11,6 @@ import 'package:shop/models/database_helper.dart';
 import 'package:shop/route/screen_export.dart';
 import 'package:shop/screens/home/views/components/horizontal_list.dart';
 
-import 'components/best_sellers.dart';
-import 'components/most_popular.dart';
 import 'components/offer_carousel_and_categories.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,10 +61,7 @@ class _HomeState extends State<HomeScreen> {
       final books = await DatabaseHelper.instance.queryBookIn(best_sellers_slugs);
       if (books.isNotEmpty){
         for (Map book in books){
-          _bestSellersDb.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], 
-              image: book['image'], description: book['description'],
-              amazon: book['amazon']));
+          _bestSellersDb.add(Book.convert(book));
         }
       }
       //find latest books on each categories
@@ -77,10 +72,7 @@ class _HomeState extends State<HomeScreen> {
         if (books.isNotEmpty){
           List<Book> basicBooks = [];
           for (Map book in books){
-            basicBooks.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], 
-              image: book['image'], description: book['description'],
-              amazon: book['amazon']));
+            basicBooks.add(Book.convert(book));
           }
           homeBookMap[cat] = basicBooks;
         }

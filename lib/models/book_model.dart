@@ -60,6 +60,29 @@ class Book {
       image: json['image'] as String
     );
   }
+  //convert
+  factory Book.convert(Map<dynamic, dynamic> map) {
+    // int page_num = 0;
+    // if (map['page_num'] != null && map['page_num'] != ""){
+    //   page_num = intmap['page_num']);
+    // }
+    return Book(
+      isbn: map['isbn'] as String,
+      amazon: map['amazon'] as String,
+      author: map['author'] as String,
+      format: map['format'] as String,
+      others: jsonEncode(map['others']),
+      page_num: map['page_num'] as int,
+      age_range: map['age_range'] as String,
+      description: map['description'] as String,
+      illustration: map['illustration'] as String,
+      release_time: map['release_time'] as int,
+      slug: map['slug'] as String,
+      title: map['title'] as String,
+      cat: map['cat'] as String,
+      image: map['image'] as String
+    );
+  }
   //convert to book detail before saving to DB
   Map<String, dynamic> toMap() {
     return {

@@ -28,10 +28,7 @@ class _LocalState extends State<BookmarkScreen> {
     if (books.isNotEmpty){
       List<Book> basicBooks = [];
           for (Map book in books){
-            basicBooks.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], 
-              image: book['image'], description: book['description'],
-              amazon: book['amazon']));
+            basicBooks.add(Book.convert(book));
           }
           setState(() {
             showingBooks = basicBooks;
@@ -50,10 +47,7 @@ class _LocalState extends State<BookmarkScreen> {
     if (books.isNotEmpty){
       List<Book> basicBooks = [];
           for (Map book in books){
-            basicBooks.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], 
-              image: book['image'], description: book['description'],
-              amazon: book['amazon']));
+            basicBooks.add(Book.convert(book));
           }
           setState(() {
             showingBooks = basicBooks;
@@ -84,10 +78,7 @@ class _LocalState extends State<BookmarkScreen> {
     if (books.isNotEmpty){
       List<Book> basicBooks = [];
           for (Map book in books){
-            basicBooks.add(Book(slug: book['slug'],
-              title: book['title'], cat: book['cat'], 
-              image: book['image'], description: book['description'],
-              amazon: book['amazon']));
+            basicBooks.add(Book.convert(book));
           }
           setState(() {
             showingBooks = basicBooks;

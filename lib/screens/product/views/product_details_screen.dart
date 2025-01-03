@@ -7,6 +7,7 @@ import 'package:shop/models/book_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'components/product_images.dart';
 import 'components/product_info.dart';
+import 'package:intl/intl.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   Book detail;
@@ -24,6 +25,13 @@ class _LocalState extends State<ProductDetailsScreen> {
   void initState() {
       super.initState();
   }
+
+  String timestampToReadableDateString(int timestamp) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    DateFormat formatter = DateFormat('yyyy-MMMM-dd');
+    return formatter.format(date);
+  }
+
   //open link in Chrome
   void _launchURL(String ext_url) async {
     if (ext_url.isEmpty){
@@ -65,6 +73,97 @@ class _LocalState extends State<ProductDetailsScreen> {
               brand: _showingDetail.cat,
               title: _showingDetail.title,
               description: _showingDetail.description??''),
+            if (_showingDetail.author != null) SliverPadding(
+              //author info
+              padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Text("By", style: Theme.of(context).textTheme.titleSmall!),
+                    const SizedBox(width: 8.0), // Add spacing between texts
+                    Text("${_showingDetail.author}"),
+                  ],
+                )
+              ),
+            ),
+            if (_showingDetail.format != null) SliverPadding(
+              //format info
+              padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Text("Format", style: Theme.of(context).textTheme.titleSmall!),
+                    const SizedBox(width: 8.0), // Add spacing between texts
+                    Text("${_showingDetail.format}"),
+                  ],
+                )
+              ),
+            ),
+            if (_showingDetail.release_time != null) SliverPadding(
+              //Release info
+              padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Text("Release", style: Theme.of(context).textTheme.titleSmall!),
+                    const SizedBox(width: 8.0), // Add spacing between texts
+                    Text(timestampToReadableDateString(_showingDetail.release_time!)),
+                  ],
+                )
+              ),
+            ),
+            if (_showingDetail.page_num != null) SliverPadding(
+              //Page info
+              padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Text("Pages", style: Theme.of(context).textTheme.titleSmall!),
+                    const SizedBox(width: 8.0), // Add spacing between texts
+                    Text("${_showingDetail.page_num}"),
+                  ],
+                )
+              ),
+            ),
+            if (_showingDetail.age_range != null) SliverPadding(
+              //Age range info
+              padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Text("Age range", style: Theme.of(context).textTheme.titleSmall!),
+                    const SizedBox(width: 8.0), // Add spacing between texts
+                    Text("${_showingDetail.age_range}"),
+                  ],
+                )
+              ),
+            ),
+            if (_showingDetail.isbn != null) SliverPadding(
+              //ISBN info
+              padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Text("ISBN", style: Theme.of(context).textTheme.titleSmall!),
+                    const SizedBox(width: 8.0), // Add spacing between texts
+                    Text("${_showingDetail.isbn}"),
+                  ],
+                )
+              ),
+            ),
+            if (_showingDetail.illustration != null && _showingDetail.illustration != '') SliverPadding(
+              //illustration info
+              padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Text("Illustration", style: Theme.of(context).textTheme.titleSmall!),
+                    const SizedBox(width: 8.0), // Add spacing between texts
+                    Text("${_showingDetail.illustration}"),
+                  ],
+                )
+              ),
+            ),
             SliverPadding(
               padding: const EdgeInsets.all(defaultPadding),
               sliver: SliverToBoxAdapter(
