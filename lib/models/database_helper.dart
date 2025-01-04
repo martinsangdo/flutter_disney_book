@@ -1,4 +1,5 @@
 //author: Sang Do
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/models/metadata_model.dart';
@@ -63,6 +64,7 @@ class DatabaseHelper {
 
   Future<int> insert(Book book) async {
     Database db = await instance.db;
+    debugPrint('inserting book');
     return await db.insert('book', book.toMap());
   }
 
@@ -84,6 +86,7 @@ class DatabaseHelper {
 
   Future<int> update(Book book) async {
     Database db = await instance.db;
+    debugPrint('updating book');
     return await db.update('book', book.toMap(), where: 'slug = ?', whereArgs: [book.slug]);
   }
 
@@ -181,6 +184,43 @@ class DatabaseHelper {
     );
     return result;
   }
+  //update or insert books at once
+  void upsertBatch(List<Book> books) async {
+    Database db = await instance.db;
+    var dbBatch = _database?.batch();
+    List<Book> list2Insert = [];
+    List<Book> list2Update = [];
+    List<String> slugs = [];
+    for (Book book in books){
+      slugs.add(book.slug);
+    }
+    if (dbBatch != null){
+      final dbBooks = await DatabaseHelper.instance.queryBookIn(slugs);
+      if (dbBooks.isNotEmpty){
+        for (Map dbBook in dbBooks){
+          if (slugs.contains(dbBook['slug'])){
+            list2Update.add(Book.convert(dbBook));
+          } else {
+            list2Insert.add(Book.convert(dbBook));  //new books
+          }
+        }
+      }
+    }
+    debugPrint('list2Insert ' + list2Insert.length.toString());
+    debugPrint('list2Update ' + list2Update.length.toString());
+
+    if (list2Insert.isNotEmpty){
+      for (Book book in list2Insert){
+        dbBatch?.insert('book', book.toMap());
+      }
+    }
+    if (list2Update.isNotEmpty){
+      for (Book book in list2Update){
+        dbBatch?.update('book', book.toMap(), where: 'slug = ?', whereArgs: [book.slug]);
+      }
+    }
+    await dbBatch?.commit();
+  }
   /////////////// METADATA
   Future<int> insertMetadata(MetaDataModel newMetadata) async {
     Database db = await instance.db;
@@ -190,4 +230,14 @@ class DatabaseHelper {
     Database db = await instance.db;
     return await db.update('metadata', newMetadata.toMap(), where: 'uuid = ?', whereArgs: [newMetadata.uuid]);
   }
+  ///// BATCH
+  // Future<List<Map>> batchQueries() async {
+  //   Database db = await instance.db;
+  //   var batch = _database.batch();
+  //   batch.rawInsert(statement1);
+  //   batch.rawInsert(statement2);
+  //   batch.rawInsert(statement3);
+  //   ...
+  //   await db.commit(noResult: true);
+  // }
 }

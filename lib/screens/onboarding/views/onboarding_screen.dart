@@ -103,9 +103,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   void updateBookDataAndOpenHome(List<Book> bookList){
-    for (Book book in bookList) {
-      DatabaseHelper.instance.upsert(book);
-    }
+    DatabaseHelper.instance.upsertBatch(bookList);
     //
     move2HomePage();
   }

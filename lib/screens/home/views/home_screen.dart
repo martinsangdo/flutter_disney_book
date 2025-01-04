@@ -48,10 +48,13 @@ class _HomeState extends State<HomeScreen> {
     final random = Random();
     return random.nextInt(max); // not Include max in the range
   }
-
-  Future<void> _getLatestBooks() async {
+  //query by transactions to speed up the time
+  Future<void> _getLatestBooksBatch() async {
     Map<String, List<Book>> homeBookMap = {};
     final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories,best_sellers,affiliate_post_fix FROM metadata', []);
+    DateTime now = DateTime.now();
+        int timestamp = now.millisecondsSinceEpoch;
+        debugPrint('after metadata ' + timestamp.toString());
     if (_metadata.isNotEmpty){
       //save post fix
       global_affiliate_post_fix = _metadata[0]['affiliate_post_fix'];
@@ -96,6 +99,10 @@ class _HomeState extends State<HomeScreen> {
       });
     }
   }
+
+  Future<void> _getLatestBooks() async {
+
+  }
   //
   @override
   void initState() {
@@ -103,7 +110,8 @@ class _HomeState extends State<HomeScreen> {
       DateTime now = DateTime.now();
       int timestamp = now.millisecondsSinceEpoch;
       debugPrint('begin ' + timestamp.toString());
-      _getLatestBooks();
+      // _getLatestBooks();
+      _getLatestBooksBatch();
   }
   @override
   void dispose() {
