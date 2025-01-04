@@ -132,8 +132,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   int _pageIndex = 0;
   final List<Onboard> _onboardData = [
     Onboard(
-      image: "assets/Illustration/Illustration-0.png",
-      imageDarkTheme: "assets/Illustration/Illustration_darkTheme_0.png",
+      image: "assets/images/logo_512x512.png",
+      imageDarkTheme: "assets/images/logo_96x96.png",
       title: "",  //getting from onboarding_content
       description: ""
     )

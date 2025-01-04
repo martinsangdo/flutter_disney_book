@@ -16,7 +16,7 @@ class Book {
     late String? description;
     late String? illustration;
     late int? release_time;
-    late bool? isBookmarked;  //user bookmarked this book or not
+    // late bool? isBookmarked;  //user bookmarked this book or not
 
   Book({
     this.isbn,
@@ -29,31 +29,60 @@ class Book {
     this.description, 
     this.illustration, 
     this.release_time,
-    this.isBookmarked,
+    // this.isBookmarked,
     required this.slug,
     required this.title,
     required this.cat,
     required this.image
   });
 
+  int getCurrentTimestampInSeconds() {
+    return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  }
+
   Book.empty(this.slug);
   //parse JSON data into Book object
   factory Book.fromJson(Map<String, dynamic> json) {
     int page_num = 0;
-    if (json['page_num'] != null && json['page_num'] != ""){
+    if (json['page_num'] != null && json['page_num'] != "" && json['page_num'] != "Boxed Set"){
       page_num = int.parse(json['page_num']);
     }
+    String isbn = "";
+    if (json['isbn'] != null){
+      isbn = json['isbn'];
+    }
+    String age_range = "";
+    if (json['age_range'] != null){
+      age_range = json['age_range'];
+    }
+    String illustration = "";
+    if (json['illustration'] != null){
+      illustration = json['illustration'];
+    }
+    String format = "";
+    if (json['format'] != null){
+      format = json['format'];
+    }
+    String author = "";
+    if (json['author'] != null){
+      author = json['author'];
+    }
+    int release_time = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    if (json['release_time'] != null){
+      release_time = json['release_time'];
+    }
+
     return Book(
-      isbn: json['isbn'] as String,
+      isbn: isbn,
       amazon: json['amazon'] as String,
-      author: json['author'] as String,
-      format: json['format'] as String,
+      author: author,
+      format: format,
       others: jsonEncode(json['others']),
       page_num: page_num,
-      age_range: json['age_range'] as String,
+      age_range: age_range,
       description: json['description'] as String,
-      illustration: json['illustration'] as String,
-      release_time: json['release_time'] as int,
+      illustration: illustration,
+      release_time: release_time,
       slug: json['slug'] as String,
       title: json['title'] as String,
       cat: json['cat'] as String,

@@ -85,8 +85,12 @@ class _HomeState extends State<HomeScreen> {
         String randCat = home_categories[getRandomNumberInRange(home_categories.length)];
         newArrivalImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
         editorChoiceImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
+        DateTime now = DateTime.now();
+        int timestamp = now.millisecondsSinceEpoch;
+        debugPrint('finish ' + timestamp.toString());
       });
     } else {
+      //empty meta data
       setState(() {
         _isCompleteFetching = true;
       });
@@ -96,6 +100,9 @@ class _HomeState extends State<HomeScreen> {
   @override
   void initState() {
       super.initState();
+      DateTime now = DateTime.now();
+      int timestamp = now.millisecondsSinceEpoch;
+      debugPrint('begin ' + timestamp.toString());
       _getLatestBooks();
   }
   @override

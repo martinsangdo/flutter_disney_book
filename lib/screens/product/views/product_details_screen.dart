@@ -57,25 +57,29 @@ class _LocalState extends State<ProductDetailsScreen> {
   void _fetchOtherBooks() async{
     if (widget.detail.others != null && widget.detail.others != ''){
       String _others = jsonDecode(widget.detail.others!);
-      List<dynamic> othersList = jsonDecode(_others);
-      List<Map<String, dynamic>> _otherDetailsList = [];  //with more book details to show
-      for (Map other in othersList){
-        if (other['slugs'].isNotEmpty && other['slugs'].length > 0){
-          //query more books data
-          final books = await DatabaseHelper.instance.queryBookIn(other['slugs']);
-          if (books.isNotEmpty){
-            List<Book> _bookDetails = [];
-            for (Map book in books){
-              _bookDetails.add(Book.convert(book));
+      if (_others != null && _others != ""){
+        List<dynamic> othersList = jsonDecode(_others);
+        if (othersList.isNotEmpty){
+          List<Map<String, dynamic>> _otherDetailsList = [];  //with more book details to show
+          for (Map other in othersList){
+            if (other['slugs'].isNotEmpty && other['slugs'].length > 0){
+              //query more books data
+              final books = await DatabaseHelper.instance.queryBookIn(other['slugs']);
+              if (books.isNotEmpty){
+                List<Book> _bookDetails = [];
+                for (Map book in books){
+                  _bookDetails.add(Book.convert(book));
+                }
+                //add to the map
+                _otherDetailsList.add({'title': other['title'], 'list': _bookDetails});
+              }
             }
-            //add to the map
-            _otherDetailsList.add({'title': other['title'], 'list': _bookDetails});
           }
+          setState((){
+            _otherList = _otherDetailsList;
+          });
         }
       }
-      setState((){
-        _otherList = _otherDetailsList;
-      });
     }
   }
 
