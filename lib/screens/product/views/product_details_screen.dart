@@ -57,11 +57,8 @@ class _LocalState extends State<ProductDetailsScreen> {
   void _fetchOtherBooks() async{
     if (widget.detail.others != null && widget.detail.others != ''){
       String _others = jsonDecode(widget.detail.others!);
-      if (_others != null && _others != ""){
-        String _other2 = jsonDecode(_others); //why so?
-        if (_other2 != 'null' && _other2 != null && _other2 != ""){
-          List<dynamic> othersList = jsonDecode(_other2);
-          if (othersList.isNotEmpty){
+      if (_others != null && _others != "" && _others != 'null'){
+          List<dynamic> othersList = jsonDecode(_others);
             List<Map<String, dynamic>> _otherDetailsList = [];  //with more book details to show
             for (Map other in othersList){
               if (other['slugs'].isNotEmpty && other['slugs'].length > 0){
@@ -80,8 +77,6 @@ class _LocalState extends State<ProductDetailsScreen> {
             setState((){
               _otherList = _otherDetailsList;
             });
-          }
-        }
       }
     }
   }

@@ -29,7 +29,6 @@ class Book {
     this.description, 
     this.illustration, 
     this.release_time,
-    // this.isBookmarked,
     required this.slug,
     required this.title,
     required this.cat,

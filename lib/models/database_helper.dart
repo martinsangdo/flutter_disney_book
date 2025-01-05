@@ -64,7 +64,6 @@ class DatabaseHelper {
 
   Future<int> insert(Book book) async {
     Database db = await instance.db;
-    debugPrint('inserting book');
     return await db.insert('book', book.toMap());
   }
 
@@ -86,7 +85,6 @@ class DatabaseHelper {
 
   Future<int> update(Book book) async {
     Database db = await instance.db;
-    debugPrint('updating book');
     return await db.update('book', book.toMap(), where: 'slug = ?', whereArgs: [book.slug]);
   }
 
@@ -189,9 +187,11 @@ class DatabaseHelper {
     var dbBatch = _database?.batch();
     List<Book> list2Insert = [];
     List<Book> list2Update = [];
-    List<String> slugs = [];
+    List<String> slugs = [];  //all slugs
+    Map<String, Book> newBooks = {};  //key: slug, value: Book detail
     for (Book book in books){
       slugs.add(book.slug);
+      newBooks[book.slug] = book;
     }
     if (dbBatch != null){
       final dbBooks = await DatabaseHelper.instance.queryBookIn(slugs);
@@ -199,8 +199,8 @@ class DatabaseHelper {
         List<String> slugsInDb = [];  //all slugs in db
         for (Map dbBook in dbBooks){
           slugsInDb.add(dbBook['slug']);
-          if (slugs.contains(dbBook['slug'])){
-            list2Update.add(Book.convert(dbBook));
+          if (slugs.contains(dbBook['slug']) && newBooks[dbBook['slug']] != null){
+            list2Update.add(newBooks[dbBook['slug']]!);  //update new book detail
           }
         }
         for (Book book in books){
@@ -217,8 +217,8 @@ class DatabaseHelper {
     } else {
       debugPrint('dbBatch null ');
     }
-    // debugPrint('list2Insert ' + list2Insert.length.toString());
-    // debugPrint('list2Update ' + list2Update.length.toString());
+    debugPrint('list2Insert ' + list2Insert.length.toString());
+    debugPrint('list2Update ' + list2Update.length.toString());
 
     if (list2Insert.isNotEmpty){
       for (Book book in list2Insert){

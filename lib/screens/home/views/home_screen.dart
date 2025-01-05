@@ -99,17 +99,10 @@ class _HomeState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _getLatestBooks() async {
-
-  }
   //
   @override
   void initState() {
       super.initState();
-      DateTime now = DateTime.now();
-      int timestamp = now.millisecondsSinceEpoch;
-      debugPrint('begin ' + timestamp.toString());
-      // _getLatestBooks();
       _getLatestBooksBatch();
   }
   @override
