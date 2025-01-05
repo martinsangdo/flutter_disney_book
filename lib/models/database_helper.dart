@@ -186,7 +186,6 @@ class DatabaseHelper {
   }
   //update or insert books at once
   void upsertBatch(List<Book> books) async {
-    Database db = await instance.db;
     var dbBatch = _database?.batch();
     List<Book> list2Insert = [];
     List<Book> list2Update = [];
@@ -197,17 +196,29 @@ class DatabaseHelper {
     if (dbBatch != null){
       final dbBooks = await DatabaseHelper.instance.queryBookIn(slugs);
       if (dbBooks.isNotEmpty){
+        List<String> slugsInDb = [];  //all slugs in db
         for (Map dbBook in dbBooks){
+          slugsInDb.add(dbBook['slug']);
           if (slugs.contains(dbBook['slug'])){
             list2Update.add(Book.convert(dbBook));
-          } else {
-            list2Insert.add(Book.convert(dbBook));  //new books
           }
         }
+        for (Book book in books){
+          if (!slugsInDb.contains(book.slug)){
+            list2Insert.add(book);  //new books
+          }
+        }
+      } else {
+        //nothing in db
+        for (Book book in books){
+          list2Insert.add(book);  //new books
+        }
       }
+    } else {
+      debugPrint('dbBatch null ');
     }
-    debugPrint('list2Insert ' + list2Insert.length.toString());
-    debugPrint('list2Update ' + list2Update.length.toString());
+    // debugPrint('list2Insert ' + list2Insert.length.toString());
+    // debugPrint('list2Update ' + list2Update.length.toString());
 
     if (list2Insert.isNotEmpty){
       for (Book book in list2Insert){

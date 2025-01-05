@@ -52,9 +52,6 @@ class _HomeState extends State<HomeScreen> {
   Future<void> _getLatestBooksBatch() async {
     Map<String, List<Book>> homeBookMap = {};
     final _metadata = await DatabaseHelper.instance.rawQuery('SELECT home_categories,best_sellers,affiliate_post_fix FROM metadata', []);
-    DateTime now = DateTime.now();
-        int timestamp = now.millisecondsSinceEpoch;
-        debugPrint('after metadata ' + timestamp.toString());
     if (_metadata.isNotEmpty){
       //save post fix
       global_affiliate_post_fix = _metadata[0]['affiliate_post_fix'];
@@ -85,12 +82,14 @@ class _HomeState extends State<HomeScreen> {
         _homeBookMap = homeBookMap;
         _isCompleteFetching = true;
         //get random book to show in banners
-        String randCat = home_categories[getRandomNumberInRange(home_categories.length)];
-        newArrivalImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
-        editorChoiceImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
-        DateTime now = DateTime.now();
-        int timestamp = now.millisecondsSinceEpoch;
-        debugPrint('finish ' + timestamp.toString());
+        if (homeBookMap.isEmpty){
+          debugPrint('homeBookMap empty');
+          //todo try to reload
+        } else {
+          String randCat = home_categories[getRandomNumberInRange(home_categories.length)];
+          newArrivalImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
+          editorChoiceImageUrl = homeBookMap[randCat]![getRandomNumberInRange(homeBookMap[randCat]!.length)].image;
+        }
       });
     } else {
       //empty meta data

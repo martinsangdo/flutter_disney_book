@@ -58,26 +58,29 @@ class _LocalState extends State<ProductDetailsScreen> {
     if (widget.detail.others != null && widget.detail.others != ''){
       String _others = jsonDecode(widget.detail.others!);
       if (_others != null && _others != ""){
-        List<dynamic> othersList = jsonDecode(_others);
-        if (othersList.isNotEmpty){
-          List<Map<String, dynamic>> _otherDetailsList = [];  //with more book details to show
-          for (Map other in othersList){
-            if (other['slugs'].isNotEmpty && other['slugs'].length > 0){
-              //query more books data
-              final books = await DatabaseHelper.instance.queryBookIn(other['slugs']);
-              if (books.isNotEmpty){
-                List<Book> _bookDetails = [];
-                for (Map book in books){
-                  _bookDetails.add(Book.convert(book));
+        String _other2 = jsonDecode(_others); //why so?
+        if (_other2 != 'null' && _other2 != null && _other2 != ""){
+          List<dynamic> othersList = jsonDecode(_other2);
+          if (othersList.isNotEmpty){
+            List<Map<String, dynamic>> _otherDetailsList = [];  //with more book details to show
+            for (Map other in othersList){
+              if (other['slugs'].isNotEmpty && other['slugs'].length > 0){
+                //query more books data
+                final books = await DatabaseHelper.instance.queryBookIn(other['slugs']);
+                if (books.isNotEmpty){
+                  List<Book> _bookDetails = [];
+                  for (Map book in books){
+                    _bookDetails.add(Book.convert(book));
+                  }
+                  //add to the map
+                  _otherDetailsList.add({'title': other['title'], 'list': _bookDetails});
                 }
-                //add to the map
-                _otherDetailsList.add({'title': other['title'], 'list': _bookDetails});
               }
             }
+            setState((){
+              _otherList = _otherDetailsList;
+            });
           }
-          setState((){
-            _otherList = _otherDetailsList;
-          });
         }
       }
     }
@@ -106,7 +109,7 @@ class _LocalState extends State<ProductDetailsScreen> {
               brand: _showingDetail.cat,
               title: _showingDetail.title,
               description: _showingDetail.description??''),
-            if (_showingDetail.author != null) SliverPadding(
+            if (_showingDetail.author != null && _showingDetail.author != "") SliverPadding(
               //author info
               padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
               sliver: SliverToBoxAdapter(
@@ -119,7 +122,7 @@ class _LocalState extends State<ProductDetailsScreen> {
                 )
               ),
             ),
-            if (_showingDetail.format != null) SliverPadding(
+            if (_showingDetail.format != null && _showingDetail.format != "" ) SliverPadding(
               //format info
               padding: const EdgeInsets.only(left:defaultPadding, right:defaultPadding),
               sliver: SliverToBoxAdapter(
