@@ -9,6 +9,7 @@ import 'package:shop/models/database_helper.dart';
 import 'package:shop/models/metadata_model.dart';
 import 'package:shop/route/screen_export.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:collection/collection.dart';
 
 import '../../onboarding/views/components/onboarding_content.dart';
 
@@ -103,8 +104,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   void updateBookDataAndOpenHome(List<Book> bookList){
-    DatabaseHelper.instance.upsertBatch(bookList);
-    //
+    Future.microtask(() { 
+      final splitBooks = bookList.slices(6);  //slit books into small parts to avoid too many query params
+      for (List<Book>splitBook in splitBooks){
+        DatabaseHelper.instance.upsertBatch(splitBook);
+      }
+    });
     move2HomePage();
   }
 

@@ -183,7 +183,7 @@ class DatabaseHelper {
     return result;
   }
   //update or insert books at once
-  void upsertBatch(List<Book> books) async {
+  Future<void> upsertBatch(List<Book> books) async {
     var dbBatch = _database?.batch();
     List<Book> list2Insert = [];
     List<Book> list2Update = [];
@@ -217,8 +217,8 @@ class DatabaseHelper {
     } else {
       debugPrint('dbBatch null ');
     }
-    debugPrint('list2Insert ' + list2Insert.length.toString());
-    debugPrint('list2Update ' + list2Update.length.toString());
+    // debugPrint('list2Insert ' + list2Insert.length.toString());
+    // debugPrint('list2Update ' + list2Update.length.toString());
 
     if (list2Insert.isNotEmpty){
       for (Book book in list2Insert){

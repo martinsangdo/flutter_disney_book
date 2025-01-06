@@ -64,7 +64,7 @@ class _LocalState extends State<HorizontalList> {
           ),
         ),
         SizedBox(
-          height: (widget.header.toLowerCase() == 'national geographic') ? 220 : 200,
+          height: (widget.header.toLowerCase() == 'national geographic') ? 225 : 205,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: _showingList.length,
